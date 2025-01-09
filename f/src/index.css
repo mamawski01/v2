@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  body {
+    @apply no-scrollbar bg-black font-sans font-medium text-zinc-300;
+  }
+}
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    @apply h-0 w-0;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    @apply z-20 bg-inherit;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300/20;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-100/20;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    @apply hidden;
+  }
+
+  .inputBtn-color::-webkit-file-upload-button {
+    @apply cursor-pointer border-none bg-zinc-800 py-1 text-zinc-100 transition-all duration-500 hover:bg-zinc-700;
+  }
+}

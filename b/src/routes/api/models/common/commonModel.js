@@ -12,7 +12,7 @@ export class CommonModel {
       gender: { type: String, required: [true, "Gender is required."] },
       status: { type: String, required: [true, "Status is required."] },
       birthdate: { type: String, required: [true, "Birthdate is required."] },
-      email: { type: String, unique: true },
+      email: { type: String },
       street: { type: String },
       purok: { type: String },
       brgy: { type: String, required: [true, "Barangay is required."] },
@@ -37,7 +37,7 @@ export class CommonModel {
         type: String,
         required: [true, "Contact Person Number In Emergency is required."],
       },
-      image: { type: String, required: [true, "Image is required."] },
+      file: { type: String, required: [true, "Image is required."] },
     };
   }
 }

@@ -10,7 +10,7 @@ const collectionName = "ConfirmedUser";
 const { Schema } = mongoose;
 const schema = new Schema({
   ...CommonModel.registryUser(),
-  userId: {
+  dataId: {
     type: String,
     unique: true,
     default: uuidv4(),

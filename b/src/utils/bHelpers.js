@@ -2,11 +2,11 @@ import { promises } from "fs";
 import Joi from "joi";
 import { schemaResult } from "./joiValidator.js";
 
-export async function deleteImage(path) {
-  console.log(path, " deleteImage");
+export async function removeFile(path) {
+  console.log(path, " deleteFile");
   if (!path || path === undefined) {
-    console.log(`path is undefined, deleteImage fx is ${path},`);
-    return `path is undefined, deleteImage fx is ${path},`;
+    console.log(`path is undefined, deleteFile fx is ${path},`);
+    return `path is undefined, deleteFile fx is ${path},`;
   }
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));

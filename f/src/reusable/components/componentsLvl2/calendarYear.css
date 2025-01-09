@@ -1,0 +1,23 @@
+.react-calendar {
+  @apply h-full !rounded !border-gray-300/20 !bg-inherit;
+}
+
+.react-calendar__tile {
+  @apply rounded transition-all duration-300 hover:!bg-zinc-900/50;
+}
+
+abbr:where([title]) {
+  @apply text-zinc-600 no-underline;
+}
+
+.react-calendar__navigation {
+  @apply pointer-events-none bg-inherit;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  @apply !text-inherit;
+}
+
+.react-calendar__tile--now {
+  @apply !bg-zinc-600/10 !backdrop-blur-sm;
+}

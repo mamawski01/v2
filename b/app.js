@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import http from "http";
 
 import { routes } from "./src/routes/routes.js";
-// import { socketServer } from "./src/routes/api/bApi.js";
+import { socketServer } from "./src/routes/api/bApi.js";
 
 dotenv.config();
 const PORT = process.env.PORT || process.env.API_PORT;
@@ -18,7 +18,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use(cors());
 
 export const server = http.createServer(app);
-// socketServer(server);
+socketServer(server);
 
 async function connectToDB() {
   try {

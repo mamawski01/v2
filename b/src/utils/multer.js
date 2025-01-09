@@ -11,7 +11,7 @@ const MIME_TYPE_MAP = {
   "image/jpg": "jpg",
 };
 
-export function imgLoc(loc = "") {
+export function fileLoc(loc = "") {
   const schema = Joi.object({
     loc: Joi.string(),
   }).validate({ loc });
@@ -34,12 +34,12 @@ export const upload = (folName = "userImgFolder", imgName = "userImg") => {
     folName: Joi.string(),
   }).validate({ imgName, folName });
   schemaResult(schema);
-  if (fs.existsSync(imgLoc(folName))) {
-    console.log(`Folder already exists ${imgLoc(folName)}`);
+  if (fs.existsSync(fileLoc(folName))) {
+    console.log(`Folder already exists ${fileLoc(folName)}`);
   } else {
-    fs.mkdir(imgLoc(folName), { recursive: true }, (err) => {
+    fs.mkdir(fileLoc(folName), { recursive: true }, (err) => {
       if (err) throw err;
-      console.log(`Folder created at ${imgLoc(folName)}`);
+      console.log(`Folder created at ${fileLoc(folName)}`);
     });
   }
 
@@ -47,7 +47,7 @@ export const upload = (folName = "userImgFolder", imgName = "userImg") => {
     limits: 50000,
     storage: multer.diskStorage({
       destination: function (_rq, _file, cb) {
-        cb(null, imgLoc(folName));
+        cb(null, fileLoc(folName));
       },
       filename: function (_rq, file, cb) {
         cb(null, imageName(imgName) + path.extname(file.originalname));
