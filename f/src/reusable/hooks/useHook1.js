@@ -41,14 +41,14 @@ export function useFetch(url, edit = true, form = false) {
     },
   });
 
-  const [apiData, apiDataSet] = useState(false);
-
+  const [apiData, apiDataSet] = useState();
+  console.log(apiData);
   //last happening consuming data from BE
-  if (form) {
+  if (!form) {
     urlArr.forEach((item) => {
       if (item !== f2b) {
-        fSocket.on(`${item}B2F`, () => {
-          apiDataSet(true);
+        fSocket.on(`${item}B2F`, (data) => {
+          apiDataSet(data);
         });
       }
     });

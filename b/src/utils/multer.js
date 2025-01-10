@@ -20,19 +20,19 @@ export function fileLoc(loc = "") {
   return "../b/uploads/" + loc;
 }
 
-export function imageName(imgName = "") {
+function fileNameFx(fileName = "") {
   const schema = Joi.object({
-    imgName: Joi.string(),
-  }).validate({ imgName });
+    fileName: Joi.string(),
+  }).validate({ fileName });
   schemaResult(schema);
-  return dayjs(Date.now()).format("YYYY-MM-DD-hh-mm-ssa-SSS") + imgName;
+  return dayjs(Date.now()).format("YYYY-MM-DD-hh-mm-ssa-SSS") + fileName;
 }
 
-export const upload = (folName = "userImgFolder", imgName = "userImg") => {
+export const upload = (folName = "userImgFolder", fileName = "userImg") => {
   const schema = Joi.object({
-    imgName: Joi.string(),
+    fileName: Joi.string(),
     folName: Joi.string(),
-  }).validate({ imgName, folName });
+  }).validate({ fileName, folName });
   schemaResult(schema);
   if (fs.existsSync(fileLoc(folName))) {
     console.log(`Folder already exists ${fileLoc(folName)}`);
@@ -50,7 +50,7 @@ export const upload = (folName = "userImgFolder", imgName = "userImg") => {
         cb(null, fileLoc(folName));
       },
       filename: function (_rq, file, cb) {
-        cb(null, imageName(imgName) + path.extname(file.originalname));
+        cb(null, fileNameFx(fileName) + path.extname(file.originalname));
       },
     }),
     fileFilter: (_rq, file, cb) => {

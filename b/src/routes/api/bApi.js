@@ -16,7 +16,9 @@ export function socketServer(socketServe) {
 
   //second happening, sending data back to FE
   io.on("connection", (socket) => {
-    const events = urlEvents.map((item) => item.replace("/", "").split("/")[0]);
+    const events = urlEvents
+      .slice(1)
+      .map((item) => item.replace("/", "").split("/")[0]);
 
     for (let i = 0; i < events.length; i++) {
       const event = events[i];

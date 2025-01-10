@@ -50,12 +50,19 @@ export function timeArr(dayOff = true) {
   return dayOff ? ["day-off", ...timeArray] : timeArray;
 }
 
+function isValidDate(date) {
+  const isValid = dayjs(date, "YYYY-MM-DD HH:mm:ss", true).isValid();
+  if (isValid) return isValid;
+  else throw new Error(`Invalid Date: ${date}`);
+}
+
+function isValidDate2(date) {
+  const isValid = dayjs(date, "YYYY-MM-DD HH:mm:ss").isValid();
+  if (isValid) return isValid;
+  else throw new Error(`Invalid Date: ${date}`);
+}
+
 export function formatDate(date) {
-  // //params check
-  // const schema = Joi.object({
-  //   date: Joi.array().items(Joi.string()).required(),
-  // }).validate({ date });
-  // schemaResult(schema);
-  // //params check
+  isValidDate2(date);
   return dayjs(date).format("YYYY-MM-DD");
 }

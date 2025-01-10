@@ -78,16 +78,18 @@ urlArr.forEach((item) => {
     routes.get(item.url, (rq, rs) => getOne(rq, rs, item.model));
   }
   if (item.url.includes("PostFile")) {
-    routes.post(item.url, (rq, rs) => {
+    routes.post(
+      item.url,
       upload(item.folderName, item.fileName).single("file"),
-        postFile(rq, rs, item.model, item.folderName);
-    });
+      (rq, rs) => postFile(rq, rs, item.model, item.folderName)
+    );
   }
   if (item.url.includes("PatchFile")) {
-    routes.patch(item.url, (rq, rs) => {
+    routes.patch(
+      item.url,
       upload(item.folderName, item.fileName).single("file"),
-        patchFile(rq, rs, item.model, item.folderName);
-    });
+      (rq, rs) => patchFile(rq, rs, item.model, item.folderName)
+    );
   }
   if (item.url.includes("RemoveFile")) {
     routes.patch(item.url, (rq, rs) => {

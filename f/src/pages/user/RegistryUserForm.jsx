@@ -37,7 +37,8 @@ export default function RegistryUserForm() {
   const { id } = useParams();
   const edit = Boolean(id);
 
-  const { data } = useFetch(`/registryUserBEGetOne/${id}`, edit);
+  const { data } = useFetch(`/registryUserBEGetOne/${id}`, edit, true);
+
   useEffect(() => {
     if (data && edit) {
       const fetchData = {
@@ -61,22 +62,17 @@ export default function RegistryUserForm() {
       gender: trimmedData.gender.value,
       status: trimmedData.gender.value,
     };
-    console.log(formData);
-    // mutate(
-    //   edit
-    //     ? patch(
-    //         `/registryUserBEPatchOne/${formData._id}`,
-    //         "registryUserFEPatchOne",
-    //         "registryUserBEPatchOne",
-    //         await new OnSubmitForm(formData).file(),
-    //       )
-    //     : post(
-    //         "/registryUserBEPostOne",
-    //         "registryUserFEPostOne",
-    //         "registryUserBEPostOne",
-    //         await new OnSubmitForm(formData).file(),
-    //       ),
-    // );
+    mutate(
+      edit
+        ? patch(
+            `/registryUserBEPatchFile/${formData._id}`,
+            await new OnSubmitForm(formData).file(),
+          )
+        : post(
+            "/registryUserBEPostFile",
+            await new OnSubmitForm(formData).file(),
+          ),
+    );
   }
 
   async function onDelete(id) {
@@ -270,13 +266,13 @@ export default function RegistryUserForm() {
               errors={errors}
             />
           </Label>
-          <Label htmlFor="image">
-            image
+          <Label htmlFor="file">
+            file
             <File
-              id="image"
+              id="file"
               reg={register}
               isRequired={{
-                required: edit ? false : `image is required`,
+                required: edit ? false : `file is required`,
               }}
               getValues={getValues}
               errors={errors}
@@ -323,6 +319,6 @@ function resetDev() {
     TIN: "1234567890",
     contactPersonNameInEmergency: "Jane Doe",
     contactPersonNumberInEmergency: "09123456789",
-    image: "https://example.com/image.jpg",
+    file: "https://example.com/image.jpg",
   };
 }

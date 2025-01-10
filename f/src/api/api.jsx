@@ -40,25 +40,25 @@ export async function get(url) {
   }
 }
 
-export async function post(url) {
+export async function post(url, data) {
   try {
-    const data = await apiClient.post(url);
+    const req = await apiClient.post(url, data);
     const f2b = url.replace("/", "").split("/")[0];
-    f2bFx(f2b, data);
+    f2bFx(f2b, req);
     toast.custom(<ToastSuccess>Saved successfully</ToastSuccess>);
-    return data;
+    return req;
   } catch (exception) {
     return DataHandler.ifError(exception);
   }
 }
 
-export async function patch(url) {
+export async function patch(url, data) {
   try {
-    const data = await apiClient.patch(url);
+    const req = await apiClient.patch(url, data);
     const f2b = url.replace("/", "").split("/")[0];
-    f2bFx(f2b, data);
+    f2bFx(f2b, req);
     toast.custom(<ToastSuccess>Edited successfully</ToastSuccess>);
-    return data;
+    return req;
   } catch (exception) {
     return DataHandler.ifError(exception);
   }
@@ -66,11 +66,11 @@ export async function patch(url) {
 
 export async function remove(url) {
   try {
-    const data = await apiClient.delete(url);
+    const req = await apiClient.delete(url);
     const f2b = url.replace("/", "").split("/")[0];
-    f2bFx(f2b, data);
+    f2bFx(f2b, req);
     toast.custom(<ToastSuccess>Deleted successfully</ToastSuccess>);
-    return data;
+    return req;
   } catch (exception) {
     return DataHandler.ifError(exception);
   }
