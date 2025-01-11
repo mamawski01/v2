@@ -10,17 +10,19 @@ export default function BtnSave({
   onClick = () => {},
 }) {
   return (
-    <Btn
-      type="submit"
-      isPending={isPending}
-      hoverColor={HoverColor.save()}
-      onClick={onClick}
-    >
-      <Icon>
-        <DocumentPlusIcon></DocumentPlusIcon>
-      </Icon>
-      {children}
-    </Btn>
+    <div>
+      <Btn
+        type="submit"
+        isPending={isPending}
+        hoverColor={HoverColor.save()}
+        onClick={onClick}
+      >
+        <Icon>
+          <DocumentPlusIcon></DocumentPlusIcon>
+        </Icon>
+        {children}
+      </Btn>
+    </div>
   );
 }
 

@@ -46,7 +46,9 @@ export default function Form({
             </div>
           )}
           <div>
-            <BtnClear isPending={isPending} onClick={superReset}></BtnClear>
+            <BtnClear isPending={isPending} onClick={superReset}>
+              Clear
+            </BtnClear>
           </div>
           {edit && onDelete && (
             <div>

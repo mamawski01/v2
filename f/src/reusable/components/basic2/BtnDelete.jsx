@@ -10,17 +10,19 @@ export default function BtnDelete({
   isPending = false,
 }) {
   return (
-    <Btn
-      type="button"
-      hoverColor={HoverColor.alert()}
-      isPending={isPending}
-      onClick={onClick}
-    >
-      <Icon>
-        <TrashIcon></TrashIcon>
-      </Icon>
-      {children}
-    </Btn>
+    <div>
+      <Btn
+        type="button"
+        hoverColor={HoverColor.alert()}
+        isPending={isPending}
+        onClick={onClick}
+      >
+        <Icon>
+          <TrashIcon></TrashIcon>
+        </Icon>
+        {children}
+      </Btn>
+    </div>
   );
 }
 

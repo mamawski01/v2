@@ -37,7 +37,7 @@ export default function RegistryUserForm() {
   const { id } = useParams();
   const edit = Boolean(id);
 
-  const { data } = useFetch(`/registryUserBEGetOne/${id}`, edit, true);
+  const { data } = useFetch(`/registryUserGetOne/${id}`, edit, true);
 
   useEffect(() => {
     if (data && edit) {
@@ -65,11 +65,11 @@ export default function RegistryUserForm() {
     mutate(
       edit
         ? patch(
-            `/registryUserBEPatchFile/${formData._id}`,
+            `/registryUserPatchFile/${formData._id}`,
             await new OnSubmitForm(formData).file(),
           )
         : post(
-            "/registryUserBEPostFile",
+            "/registryUserPostFile",
             await new OnSubmitForm(formData).file(),
           ),
     );
@@ -78,7 +78,7 @@ export default function RegistryUserForm() {
   async function onDelete(id) {
     const confirmDelete = await swalAlert("Yes, registry User");
     if (confirmDelete.isConfirmed) {
-      mutate(remove(`/registryUserBEDeleteOne/${id}`));
+      mutate(remove(`/registryUserRemoveFile/${id}`));
     }
   }
 
@@ -90,7 +90,7 @@ export default function RegistryUserForm() {
         onSubmit={handleSubmit(onSubmit, onError)}
         isPending={isPending}
         superReset={superReset}
-        onClick={() => onDelete(id)}
+        onDelete={() => onDelete(id)}
         edit={edit}
         formName={edit ? `${data.data.firstName} ${data.data.lastName}` : ""}
       >
@@ -319,6 +319,5 @@ function resetDev() {
     TIN: "1234567890",
     contactPersonNameInEmergency: "Jane Doe",
     contactPersonNumberInEmergency: "09123456789",
-    file: "https://example.com/image.jpg",
   };
 }

@@ -2,7 +2,7 @@ import Joi from "joi";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 
-import { StrPhrase } from "./utils0";
+import { isValidDate2, StrPhrase } from "./utils0";
 import { schemaResult } from "./joiValidator";
 
 export function documentTitle() {
@@ -26,13 +26,7 @@ export function documentTitle() {
 }
 
 export function calcAge(birthday) {
-  //params check
-  const schema = Joi.object({
-    birthday: Joi.string().required(),
-  }).validate({ birthday });
-  schemaResult(schema);
-  //params check
-
+  isValidDate2(birthday);
   const birthdate = dayjs(birthday);
   const currentDate = dayjs();
   const age = currentDate.diff(birthdate, "year");

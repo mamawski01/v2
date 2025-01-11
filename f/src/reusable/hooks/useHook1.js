@@ -6,24 +6,8 @@ import { fSocket, get } from "../../api/api";
 import { schemaResult } from "../../lib/joiValidator";
 import dayjs from "dayjs";
 
-export const { data: urlData } = await get("/getUrl");
+export const { data: urlData } = await get("/systemUrlGetException");
 const urlArr = urlData.map((url) => url.replace("/", "").split("/")[0]);
-
-// export function useGet(b2f) {
-//   //params check
-//   const schema = Joi.object({
-//     b2f: Joi.string().required(),
-//   }).validate({ b2f });
-//   schemaResult(schema);
-//   //params check
-//   //last happening consuming data from BE
-//   const [apiData, apiDataSet] = useState();
-//   fSocket.on(`${b2f}B2F`, (data) => {
-//     console.log(data);
-//     apiDataSet(data);
-//   });
-//   return apiData;
-// }
 
 export function useFetch(url, edit = true, form = false) {
   //params check
@@ -42,16 +26,24 @@ export function useFetch(url, edit = true, form = false) {
   });
 
   const [apiData, apiDataSet] = useState();
-  console.log(apiData);
   //last happening consuming data from BE
   if (!form) {
+    let arr = [];
+    const specificUrl = f2b
+      .split(/(?=[A-Z])/)
+      .slice(0, 2)
+      .join("");
+
     urlArr.forEach((item) => {
-      if (item !== f2b) {
+      if (item !== f2b && item.includes(specificUrl)) {
+        console.log(item);
+        arr.push(item);
         fSocket.on(`${item}B2F`, (data) => {
           apiDataSet(data);
         });
       }
     });
+    // arr.length > 7 && console.log("Must less than 7. Just check here.");
   }
   useEffect(() => {
     refetch();

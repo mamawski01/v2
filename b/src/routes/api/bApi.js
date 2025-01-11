@@ -16,9 +16,7 @@ export function socketServer(socketServe) {
 
   //second happening, sending data back to FE
   io.on("connection", (socket) => {
-    const events = urlEvents
-      .slice(1)
-      .map((item) => item.replace("/", "").split("/")[0]);
+    const events = urlEvents.map((item) => item.replace("/", "").split("/")[0]);
 
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
@@ -150,10 +148,10 @@ export async function deleteFile(rq, rs, model, folderName) {
   }
 }
 
-export async function replaceOne(rq, rs, model, modelToBeReplaced) {
+export async function transferOne(rq, rs, model, modelToBeTransfer) {
   try {
     const { id, dataId } = rq.params;
-    const modelToReplace = await modelToBeReplaced.findById(id);
+    const modelToReplace = await modelToBeTransfer.findById(id);
     if (!modelToReplace) DataHandler.dataNotFound(rq, rs);
 
     //check if dataId exist and delete image, dataId must be unique
@@ -163,7 +161,7 @@ export async function replaceOne(rq, rs, model, modelToBeReplaced) {
     if (dataIdExist) return DataHandler.duplicatedEntry(rq, rs, dataIdExist);
     //check if dataId exist and delete image, dataId must be unique
 
-    await modelToBeReplaced.findByIdAndDelete(id);
+    await modelToBeTransfer.findByIdAndDelete(id);
     const modelToReplaceLean = modelToReplace.toObject();
     const data = await model.create(modelToReplaceLean);
     return DataHandler.isFound(rs, data);

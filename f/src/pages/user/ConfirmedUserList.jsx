@@ -7,6 +7,8 @@ import {
   PhoneIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
+import { remove } from "../../api/api";
+import { calcAge, swalAlert } from "../../lib/utils1";
 import Card from "../../reusable/components/basic0/Card";
 import ContentBox0 from "../../reusable/components/basic0/ContentBox0";
 import ContentBox1 from "../../reusable/components/basic0/ContentBox1";
@@ -18,50 +20,45 @@ import CreateSomething from "../../reusable/components/basic1/CreateSomething";
 import Loading from "../../reusable/components/basic1/Loading";
 import BtnAddInLink from "../../reusable/components/basic2/BtnAddInLink";
 import { useFetch, useMutate } from "../../reusable/hooks/useHook1";
-import { calcAge, swalAlert } from "../../lib/utils1";
-import BtnSave from "../../reusable/components/basic2/BtnSave";
-import { post, remove } from "../../api/api";
-import BtnDelete from "../../reusable/components/basic2/BtnDelete";
 import BtnEditLink from "../../reusable/components/basic2/BtnEditLink";
+import BtnDelete from "../../reusable/components/basic2/BtnDelete";
 
-export default function RegistryUserList() {
-  const { data } = useFetch("/registryUserGetAll");
+export default function ConfirmedUserList() {
+  const { data } = useFetch("/confirmUserGetAll");
   const { mutate, isPending } = useMutate();
 
-  async function onTransfer(id) {
+  async function onDelete(id, userId) {
     const confirmDelete = await swalAlert(
-      "Yes, transfer registry user to confirm User",
+      "Yes, delete a confirmed user and all of its data.",
     );
     if (confirmDelete.isConfirmed) {
-      mutate(post(`/confirmedUserTransferOne/${id}`));
+      mutate(remove(`/confirmedUserRemoveFile/${id}`));
+      if (userId) {
+        ("");
+      }
     }
   }
-  async function onDelete(id) {
-    const confirmDelete = await swalAlert("Yes, delete User");
-    if (confirmDelete.isConfirmed) {
-      mutate(remove(`/registryUserRemoveFile/${id}`));
-    }
-  }
-
-  const registerUsers = data?.data?.reverse();
-  if (!registerUsers) return <Loading></Loading>;
-  if (registerUsers) {
+  const confirmUsers = data?.data?.reverse();
+  if (!confirmUsers) return <Loading></Loading>;
+  if (confirmUsers)
     return (
       <ContentBox0>
-        <H1MainTitle>RegistryUserList</H1MainTitle>
-        {registerUsers.length === 0 && (
+        <H1MainTitle>ConfirmedUserList</H1MainTitle>
+        {confirmUsers.length === 0 && (
           <CreateSomething>
             <p>List is empty, create something...</p>
-            <BtnAddInLink to="registryUserForm">Add User</BtnAddInLink>
+            <BtnAddInLink to="/homepage/registryUserList/registryUserForm">
+              Add User
+            </BtnAddInLink>
           </CreateSomething>
         )}
-        {registerUsers.length > 0 && (
+        {confirmUsers.length > 0 && (
           <ContentBox1>
             <div className="flex w-full justify-end">
               <BtnAddInLink to="registryUserForm">Add User</BtnAddInLink>
             </div>
             <Row wider={true}>
-              {registerUsers.slice().map((data, i) => (
+              {confirmUsers.slice().map((data, i) => (
                 <Card key={i} data={data}>
                   <div className="flex flex-col items-center justify-center">
                     <ImageProfile width="32" src={data.image}></ImageProfile>
@@ -81,14 +78,11 @@ export default function RegistryUserList() {
                     </Icon>
                   </div>
                   <div className="flex w-full justify-evenly">
-                    <BtnSave onClick={() => onTransfer(data._id)}>
-                      Confirm User
-                    </BtnSave>
-                    <BtnEditLink to={`registryUserForm/${data._id}`}>
+                    <BtnEditLink to={`confirmedUserForm/${data._id}`}>
                       Edit User
                     </BtnEditLink>
                     <BtnDelete
-                      onClick={() => onDelete(data._id)}
+                      onClick={() => onDelete(data._id, data.userId)}
                       isPending={isPending}
                     >
                       Delete User
@@ -134,5 +128,4 @@ export default function RegistryUserList() {
         )}
       </ContentBox0>
     );
-  }
 }

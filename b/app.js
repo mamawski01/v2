@@ -10,7 +10,7 @@ import { routes } from "./src/routes/routes.js";
 import { socketServer } from "./src/routes/api/bApi.js";
 
 dotenv.config();
-const PORT = process.env.PORT || process.env.API_PORT;
+export const PORT = process.env.PORT || process.env.API_PORT;
 const localhost = `http://localhost:${PORT}/`;
 
 const app = express();

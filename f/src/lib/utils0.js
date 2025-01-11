@@ -50,13 +50,13 @@ export function timeArr(dayOff = true) {
   return dayOff ? ["day-off", ...timeArray] : timeArray;
 }
 
-function isValidDate(date) {
+export function isValidDate(date) {
   const isValid = dayjs(date, "YYYY-MM-DD HH:mm:ss", true).isValid();
   if (isValid) return isValid;
   else throw new Error(`Invalid Date: ${date}`);
 }
 
-function isValidDate2(date) {
+export function isValidDate2(date) {
   const isValid = dayjs(date, "YYYY-MM-DD HH:mm:ss").isValid();
   if (isValid) return isValid;
   else throw new Error(`Invalid Date: ${date}`);

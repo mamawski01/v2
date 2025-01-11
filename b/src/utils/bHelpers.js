@@ -1,6 +1,7 @@
 import { promises } from "fs";
 import Joi from "joi";
 import { schemaResult } from "./joiValidator.js";
+import { PORT } from "../../app.js";
 
 export async function removeFile(path) {
   console.log(path, " deleteFile");
@@ -24,5 +25,5 @@ export function fileUrl(loc = "") {
     loc: Joi.string(),
   }).validate({ loc });
   schemaResult(schema);
-  return "http://localhost:7000/uploads/" + loc;
+  return `http://localhost:${PORT}/uploads/` + loc;
 }

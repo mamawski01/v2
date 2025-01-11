@@ -9,7 +9,7 @@ import {
   getUrl,
   patchFile,
   postFile,
-  replaceOne,
+  transferOne,
 } from "./api/bApi.js";
 import { upload } from "../utils/multer.js";
 import RegistryUserModel from "./api/models/RegistryUserModel.js";
@@ -19,44 +19,44 @@ export const routes = express.Router();
 
 export const urlArr = [
   //url
-  { url: "/getUrl" },
+  { url: "/systemUrlGetException" },
   // { url: "/urlGetLocal", model: ulr },
   // registryUser
-  { url: "/registryUserBEGetAll", model: RegistryUserModel },
-  { url: "/registryUserBEGetOne/:id", model: RegistryUserModel },
+  { url: "/registryUserGetAll", model: RegistryUserModel },
+  { url: "/registryUserGetOne/:id", model: RegistryUserModel },
   {
-    url: "/registryUserBEPostFile",
+    url: "/registryUserPostFile",
     model: RegistryUserModel,
     folderName: "userImgFol",
     fileName: "userImg",
   },
   {
-    url: "/registryUserBEPatchFile/:id",
+    url: "/registryUserPatchFile/:id",
     model: RegistryUserModel,
     folderName: "userImgFol",
     fileName: "userImg",
   },
   {
-    url: "/registryUserBERemoveFile/:id",
+    url: "/registryUserRemoveFile/:id",
     model: RegistryUserModel,
     folderName: "userImgFol",
   },
   //confirmUser
-  { url: "/confirmUserBEGetAll", model: ConfirmedUserModel },
-  { url: "/confirmUserBEGetOne/:id", model: ConfirmedUserModel },
+  { url: "/confirmUserGetAll", model: ConfirmedUserModel },
+  { url: "/confirmUserGetOne/:id", model: ConfirmedUserModel },
   {
-    url: "/confirmedUserBEReplaceOne/:id",
+    url: "/confirmedUserTransferOne/:id",
     model: ConfirmedUserModel,
-    modelToBeReplaced: RegistryUserModel,
+    modelToBeTransfer: RegistryUserModel,
   },
   {
-    url: "/confirmedUserBEPatchFile/:id",
+    url: "/confirmedUserPatchFile/:id",
     model: ConfirmedUserModel,
     folderName: "userImgFol",
     fileName: "userImg",
   },
   {
-    url: "/confirmedUserBERemoveFile/:id",
+    url: "/confirmedUserRemoveFile/:id",
     model: ConfirmedUserModel,
     folderName: "userImgFol",
   },
@@ -65,7 +65,8 @@ export const urlArr = [
 export const urlEvents = urlArr.map((item) => item.url);
 
 urlArr.forEach((item) => {
-  if (item.url.includes("getUrl")) {
+  checkUrlFormat(item.url);
+  if (item.url.includes("systemUrlGetException")) {
     routes.get(item.url, (rq, rs) => getUrl(rq, rs));
   }
   if (item.url.includes("GetLocal")) {
@@ -92,13 +93,25 @@ urlArr.forEach((item) => {
     );
   }
   if (item.url.includes("RemoveFile")) {
-    routes.patch(item.url, (rq, rs) => {
+    routes.delete(item.url, (rq, rs) => {
       deleteFile(rq, rs, item.model, item.folderName);
     });
   }
-  if (item.url.includes("ReplaceOne")) {
-    routes.patch(item.url, (rq, rs) => {
-      replaceOne(rq, rs, item.model, item.modelToBeReplaced);
+  if (item.url.includes("TransferOne")) {
+    routes.post(item.url, (rq, rs) => {
+      transferOne(rq, rs, item.model, item.modelToBeTransfer);
     });
   }
 });
+
+function checkUrlFormat(url) {
+  const words = url.replace("/", "").split(/(?=[A-Z])/);
+  if (
+    words.length !== 4 ||
+    words.filter((word) => word.match(/[A-Z]/)).length !== 3
+  ) {
+    throw new Error(
+      "Please follow URL convention: 4 words and 3 capital letters"
+    );
+  }
+}

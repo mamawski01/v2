@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-
-import ContentBox2 from "../componentsLvl2/ContentBox2";
+import ContentBox2 from "./ContentBox2";
 
 export default function Card({ children }) {
   const [expand, expandSet] = useState();
@@ -17,7 +16,7 @@ export default function Card({ children }) {
             className={`${expand ? "max-h-screen" : "max-h-0"} overflow-hidden transition-all duration-300`}
           >
             <div>
-              {children.length > 1 &&
+              {children?.length > 1 &&
                 children.slice(2).map((node, i) => (
                   <div key={i} title={node.props.children}>
                     {node}

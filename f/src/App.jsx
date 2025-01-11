@@ -13,6 +13,8 @@ import Homepage from "./pages/mainPage/Homepage";
 import RegistryUserList from "./pages/user/RegistryUserList";
 import GlobalProvider from "./context/GlobalProvider";
 import RegistryUserForm from "./pages/user/RegistryUserForm";
+import ConfirmedUserList from "./pages/user/ConfirmedUserList";
+import ConfirmedUserForm from "./pages/user/ConfirmedUserForm";
 
 const routes = [
   {
@@ -35,6 +37,23 @@ const routes = [
       {
         path: "homepage/registryUserList/registryUserForm",
         element: <RegistryUserForm />,
+      },
+      {
+        path: "homepage/registryUserList/registryUserForm/:id",
+        element: <RegistryUserForm />,
+      },
+
+      {
+        path: "homepage/confirmUserList",
+        element: <ConfirmedUserList />,
+      },
+      {
+        path: "homepage/confirmUserList/confirmedUserForm/",
+        element: <ConfirmedUserForm />,
+      },
+      {
+        path: "homepage/confirmUserList/confirmedUserForm/:id",
+        element: <ConfirmedUserForm />,
       },
     ],
   },
