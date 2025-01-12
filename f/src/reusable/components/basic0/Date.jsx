@@ -6,18 +6,13 @@ export default function Date({
   errors = {},
   Controller = () => {},
   control = {},
+  rules = {},
 }) {
   return (
     <div className="relative w-48">
       <Controller
         control={control}
-        rules={{
-          validate: (value) => {
-            if (!value?.startDate && !value?.endDate) {
-              return `${id} is required.`;
-            }
-          },
-        }}
+        rules={rules}
         id={id}
         name={id}
         render={({ field: { onChange, onBlur, value } }) => (
@@ -52,4 +47,5 @@ Date.propTypes = {
   control: PropTypes.object,
   errors: PropTypes.object,
   id: PropTypes.string,
+  rules: PropTypes.object,
 };

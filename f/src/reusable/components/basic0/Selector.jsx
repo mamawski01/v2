@@ -63,6 +63,7 @@ export default function Selector({
     { value: "female", label: "female" },
   ],
   transparentBorder = false,
+  rules = {},
 }) {
   return (
     <div>
@@ -70,14 +71,7 @@ export default function Selector({
         control={control}
         id={id}
         name={id}
-        rules={{
-          validate: (value) => {
-            if (!value?.value && !value?.label) {
-              return `${id} is required.`;
-            }
-            return true;
-          },
-        }}
+        rules={rules}
         render={({ field: { onChange, onBlur, value } }) => (
           <Select
             options={options}
@@ -105,5 +99,6 @@ Selector.propTypes = {
   errors: PropTypes.object,
   id: PropTypes.string,
   options: PropTypes.array,
+  rules: PropTypes.object,
   transparentBorder: PropTypes.bool,
 };

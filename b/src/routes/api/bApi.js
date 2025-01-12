@@ -2,7 +2,7 @@
 
 import { Server } from "socket.io";
 
-import { urlEvents } from "../routes.js";
+import { events, urlEvents } from "../routes.js";
 import { removeFile, fileUrl } from "../../utils/bHelpers.js";
 import { fileLoc } from "../../utils/multer.js";
 
@@ -13,11 +13,8 @@ export function socketServer(socketServe) {
       methods: ["GET", "POST"],
     },
   });
-
   //second happening, sending data back to FE
   io.on("connection", (socket) => {
-    const events = urlEvents.map((item) => item.replace("/", "").split("/")[0]);
-
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
       const { f2b, b2f } = { f2b: `${event}F2B`, b2f: `${event}B2F` };
@@ -61,7 +58,7 @@ class DataHandler {
 
 export async function getUrl(rq, rs) {
   try {
-    const data = urlEvents;
+    const data = { urlEvents, events };
     return DataHandler.isFound(rs, data);
   } catch (error) {
     return DataHandler.ifError(rq, rs, error);
@@ -111,6 +108,7 @@ export async function postFile(rq, rs, model, folderName) {
 export async function patchFile(rq, rs, model, folderName) {
   try {
     const { id, dataId = "" } = rq.params;
+
     //userPrevFile with rq.file?.filename
     const user = await model.findById(id);
     if (!user) return DataHandler.dataNotFound(rq, rs);
@@ -123,7 +121,7 @@ export async function patchFile(rq, rs, model, folderName) {
     });
     if (dataIdExist) return DataHandler.duplicatedEntry(rq, rs, dataIdExist);
     //check if dataId exist and delete image, dataId must be unique
-    const data = await model.create({
+    const data = await model.findByIdAndUpdate(id, {
       ...rq.body,
       file: rq.file?.filename && fileUrl(`${folderName}/`) + rq.file.filename,
     });

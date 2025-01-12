@@ -6,8 +6,33 @@ import { fSocket, get } from "../../api/api";
 import { schemaResult } from "../../lib/joiValidator";
 import dayjs from "dayjs";
 
-export const { data: urlData } = await get("/systemUrlGetException");
-const urlArr = urlData.map((url) => url.replace("/", "").split("/")[0]);
+const { data: urlData } = await get("/systemUrl/getException");
+
+const events = urlData?.events && urlData?.events;
+export const urlEvents = urlData?.urlEvents && urlData.urlEvents;
+// console.log(events);
+
+export const registryUserGetAll = colonRemove(urlEvents[1]);
+export const registryUserGetOne = colonRemove(urlEvents[2]);
+export const registryUserPostFile = colonRemove(urlEvents[3]);
+export const registryUserPatchFile = colonRemove(urlEvents[4]);
+export const registryUserRemoveFile = colonRemove(urlEvents[5]);
+export const confirmedUserGetAll = colonRemove(urlEvents[6]);
+export const confirmedUserGetOne = colonRemove(urlEvents[7]);
+export const registryUserToConfirmedUserTransferOne = colonRemove(urlEvents[8]);
+export const confirmedUserPatchFile = colonRemove(urlEvents[9]);
+export const confirmedUserRemoveFile = colonRemove(urlEvents[10]);
+
+function colonRemove(url) {
+  return url.split(":")[0];
+}
+
+export function f2bFormat(url) {
+  const firstWord = url.split("/")[1];
+  const secondWord =
+    url.split("/")[2].charAt(0).toUpperCase() + url.split("/")[2].slice(1);
+  return firstWord + secondWord;
+}
 
 export function useFetch(url, edit = true, form = false) {
   //params check
@@ -17,7 +42,7 @@ export function useFetch(url, edit = true, form = false) {
   }).validate({ url, edit });
   schemaResult(schema);
   //params check
-  const f2b = url.replace("/", "").split("/")[0];
+  const f2b = f2bFormat(url);
   const { data, refetch, isFetching } = useQuery({
     queryKey: [f2b],
     queryFn: async () => {
@@ -29,21 +54,21 @@ export function useFetch(url, edit = true, form = false) {
   //last happening consuming data from BE
   if (!form) {
     let arr = [];
-    const specificUrl = f2b
-      .split(/(?=[A-Z])/)
-      .slice(0, 2)
-      .join("");
-
-    urlArr.forEach((item) => {
-      if (item !== f2b && item.includes(specificUrl)) {
-        console.log(item);
-        arr.push(item);
-        fSocket.on(`${item}B2F`, (data) => {
-          apiDataSet(data);
-        });
-      }
-    });
-    // arr.length > 7 && console.log("Must less than 7. Just check here.");
+    const sameUrl = url.split("/")[1];
+    if (events) {
+      events.forEach((item) => {
+        if (
+          item !== f2b &&
+          item.toLowerCase().includes(sameUrl.toLowerCase())
+        ) {
+          arr.push(item);
+          fSocket.on(`${item}B2F`, (data) => {
+            apiDataSet(data);
+          });
+        }
+      });
+      arr.length > 7 && console.log("Must less than 7. Just check here.");
+    }
   }
   useEffect(() => {
     refetch();
@@ -62,7 +87,7 @@ export function usePreFetch(arr) {
 
   useEffect(() => {
     arr.forEach((url) => {
-      const f2b = url.replace("/", "").split("/")[0];
+      const f2b = f2bFormat(url);
       queryClient.prefetchQuery({
         queryKey: [f2b],
         queryFn: async () => {

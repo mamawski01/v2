@@ -17,7 +17,13 @@ import Row from "../../reusable/components/basic0/Row";
 import CreateSomething from "../../reusable/components/basic1/CreateSomething";
 import Loading from "../../reusable/components/basic1/Loading";
 import BtnAddInLink from "../../reusable/components/basic2/BtnAddInLink";
-import { useFetch, useMutate } from "../../reusable/hooks/useHook1";
+import {
+  registryUserGetAll,
+  registryUserRemoveFile,
+  registryUserToConfirmedUserTransferOne,
+  useFetch,
+  useMutate,
+} from "../../reusable/hooks/useHook1";
 import { calcAge, swalAlert } from "../../lib/utils1";
 import BtnSave from "../../reusable/components/basic2/BtnSave";
 import { post, remove } from "../../api/api";
@@ -25,7 +31,7 @@ import BtnDelete from "../../reusable/components/basic2/BtnDelete";
 import BtnEditLink from "../../reusable/components/basic2/BtnEditLink";
 
 export default function RegistryUserList() {
-  const { data } = useFetch("/registryUserGetAll");
+  const { data } = useFetch(registryUserGetAll);
   const { mutate, isPending } = useMutate();
 
   async function onTransfer(id) {
@@ -33,13 +39,13 @@ export default function RegistryUserList() {
       "Yes, transfer registry user to confirm User",
     );
     if (confirmDelete.isConfirmed) {
-      mutate(post(`/confirmedUserTransferOne/${id}`));
+      mutate(post(registryUserToConfirmedUserTransferOne + id));
     }
   }
   async function onDelete(id) {
     const confirmDelete = await swalAlert("Yes, delete User");
     if (confirmDelete.isConfirmed) {
-      mutate(remove(`/registryUserRemoveFile/${id}`));
+      mutate(remove(registryUserRemoveFile + id));
     }
   }
 
@@ -64,7 +70,7 @@ export default function RegistryUserList() {
               {registerUsers.slice().map((data, i) => (
                 <Card key={i} data={data}>
                   <div className="flex flex-col items-center justify-center">
-                    <ImageProfile width="32" src={data.image}></ImageProfile>
+                    <ImageProfile width="32" src={data.file}></ImageProfile>
                     <Icon>
                       <UserIcon></UserIcon>
                       <p>

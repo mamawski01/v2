@@ -4,6 +4,7 @@ import io from "socket.io-client";
 
 import ToastSuccess from "../reusable/components/basic1/ToastSuccess";
 import ToastError from "../reusable/components/basic1/ToastError";
+import { f2bFormat } from "../reusable/hooks/useHook1";
 
 const bServer = "http://localhost:8000";
 
@@ -15,7 +16,8 @@ const apiClient = axios.create({
 export const fSocket = io.connect(bServer);
 
 //first happening sending data to BE
-function f2bFx(f2b, data) {
+function f2bFx(url, data) {
+  const f2b = f2bFormat(url);
   fSocket.emit(`${f2b}F2B`, data);
 }
 
@@ -32,8 +34,7 @@ class DataHandler {
 export async function get(url) {
   try {
     const data = await apiClient.get(url);
-    const f2b = url.replace("/", "").split("/")[0];
-    f2bFx(f2b, data);
+    f2bFx(url, data);
     return data;
   } catch (exception) {
     return DataHandler.ifError(exception);
@@ -43,8 +44,7 @@ export async function get(url) {
 export async function post(url, data) {
   try {
     const req = await apiClient.post(url, data);
-    const f2b = url.replace("/", "").split("/")[0];
-    f2bFx(f2b, req);
+    f2bFx(url, req);
     toast.custom(<ToastSuccess>Saved successfully</ToastSuccess>);
     return req;
   } catch (exception) {
@@ -55,8 +55,7 @@ export async function post(url, data) {
 export async function patch(url, data) {
   try {
     const req = await apiClient.patch(url, data);
-    const f2b = url.replace("/", "").split("/")[0];
-    f2bFx(f2b, req);
+    f2bFx(url, req);
     toast.custom(<ToastSuccess>Edited successfully</ToastSuccess>);
     return req;
   } catch (exception) {
@@ -67,8 +66,7 @@ export async function patch(url, data) {
 export async function remove(url) {
   try {
     const req = await apiClient.delete(url);
-    const f2b = url.replace("/", "").split("/")[0];
-    f2bFx(f2b, req);
+    f2bFx(url, req);
     toast.custom(<ToastSuccess>Deleted successfully</ToastSuccess>);
     return req;
   } catch (exception) {

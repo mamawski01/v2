@@ -1,15 +1,18 @@
 import PropTypes from "prop-types";
 import { GlobalContext } from "./GlobalContext";
-import { urlData, usePreFetch } from "../reusable/hooks/useHook1";
+import { urlEvents, usePreFetch } from "../reusable/hooks/useHook1";
+import Loading from "../reusable/components/basic1/Loading";
 
 export default function GlobalProvider({ children }) {
-  const urlArr = urlData && urlData.filter((url) => url.includes("GetAll"));
+  const urlArr = urlEvents && urlEvents.filter((url) => url.includes("getAll"));
+
   const preFetchArr = [...(urlArr ?? [])];
   usePreFetch(preFetchArr);
 
-  if (urlData) {
+  if (!urlEvents) return <Loading></Loading>;
+  if (urlEvents) {
     return (
-      <GlobalContext.Provider value={{ urlData }}>
+      <GlobalContext.Provider value={{ urlEvents }}>
         {children}
       </GlobalContext.Provider>
     );

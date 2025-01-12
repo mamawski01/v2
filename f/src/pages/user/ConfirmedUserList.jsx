@@ -7,8 +7,7 @@ import {
   PhoneIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
-import { remove } from "../../api/api";
-import { calcAge, swalAlert } from "../../lib/utils1";
+import { calcAge } from "../../lib/utils1";
 import Card from "../../reusable/components/basic0/Card";
 import ContentBox0 from "../../reusable/components/basic0/ContentBox0";
 import ContentBox1 from "../../reusable/components/basic0/ContentBox1";
@@ -19,25 +18,20 @@ import Row from "../../reusable/components/basic0/Row";
 import CreateSomething from "../../reusable/components/basic1/CreateSomething";
 import Loading from "../../reusable/components/basic1/Loading";
 import BtnAddInLink from "../../reusable/components/basic2/BtnAddInLink";
-import { useFetch, useMutate } from "../../reusable/hooks/useHook1";
+import {
+  confirmedUserGetAll,
+  useFetch,
+  useMutate,
+} from "../../reusable/hooks/useHook1";
 import BtnEditLink from "../../reusable/components/basic2/BtnEditLink";
 import BtnDelete from "../../reusable/components/basic2/BtnDelete";
+import { onDeleteConfirmedUser } from "./helpers/userHelper";
+import BtnLink from "../../reusable/components/basic0/BtnLink";
 
 export default function ConfirmedUserList() {
-  const { data } = useFetch("/confirmUserGetAll");
-  const { mutate, isPending } = useMutate();
+  const { data } = useFetch(confirmedUserGetAll);
+  const { isPending, mutate } = useMutate();
 
-  async function onDelete(id, userId) {
-    const confirmDelete = await swalAlert(
-      "Yes, delete a confirmed user and all of its data.",
-    );
-    if (confirmDelete.isConfirmed) {
-      mutate(remove(`/confirmedUserRemoveFile/${id}`));
-      if (userId) {
-        ("");
-      }
-    }
-  }
   const confirmUsers = data?.data?.reverse();
   if (!confirmUsers) return <Loading></Loading>;
   if (confirmUsers)
@@ -47,21 +41,25 @@ export default function ConfirmedUserList() {
         {confirmUsers.length === 0 && (
           <CreateSomething>
             <p>List is empty, create something...</p>
-            <BtnAddInLink to="/homepage/registryUserList/registryUserForm">
-              Add User
-            </BtnAddInLink>
+            <div>
+              <BtnLink to="/homepage/registryUserList">
+                Go to Registry User
+              </BtnLink>
+            </div>
           </CreateSomething>
         )}
         {confirmUsers.length > 0 && (
           <ContentBox1>
             <div className="flex w-full justify-end">
-              <BtnAddInLink to="registryUserForm">Add User</BtnAddInLink>
+              <BtnAddInLink to="/homepage/registryUserList/registryUserForm">
+                Add User
+              </BtnAddInLink>
             </div>
             <Row wider={true}>
               {confirmUsers.slice().map((data, i) => (
                 <Card key={i} data={data}>
                   <div className="flex flex-col items-center justify-center">
-                    <ImageProfile width="32" src={data.image}></ImageProfile>
+                    <ImageProfile width="32" src={data.file}></ImageProfile>
                     <Icon>
                       <UserIcon></UserIcon>
                       <p>
@@ -82,7 +80,9 @@ export default function ConfirmedUserList() {
                       Edit User
                     </BtnEditLink>
                     <BtnDelete
-                      onClick={() => onDelete(data._id, data.userId)}
+                      onClick={() =>
+                        onDeleteConfirmedUser(mutate, data._id, data.userId)
+                      }
                       isPending={isPending}
                     >
                       Delete User

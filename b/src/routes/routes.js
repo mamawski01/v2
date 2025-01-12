@@ -13,105 +13,100 @@ import {
 } from "./api/bApi.js";
 import { upload } from "../utils/multer.js";
 import RegistryUserModel from "./api/models/RegistryUserModel.js";
-import ConfirmedUserModel from "./api/models/ConfirmUserModel.js";
+import ConfirmedUserModel from "./api/models/ConfirmedUserModel.js";
 
 export const routes = express.Router();
 
 export const urlArr = [
   //url
-  { url: "/systemUrlGetException" },
-  // { url: "/urlGetLocal", model: ulr },
+  { url: "/systemUrl/getException" },
   // registryUser
-  { url: "/registryUserGetAll", model: RegistryUserModel },
-  { url: "/registryUserGetOne/:id", model: RegistryUserModel },
+  { url: "/registryUser/getAll", model: RegistryUserModel },
+  { url: "/registryUser/getOne/:id", model: RegistryUserModel },
   {
-    url: "/registryUserPostFile",
+    url: "/registryUser/postFile",
     model: RegistryUserModel,
     folderName: "userImgFol",
     fileName: "userImg",
   },
   {
-    url: "/registryUserPatchFile/:id",
+    url: "/registryUser/patchFile/:id",
     model: RegistryUserModel,
     folderName: "userImgFol",
     fileName: "userImg",
   },
   {
-    url: "/registryUserRemoveFile/:id",
+    url: "/registryUser/removeFile/:id",
     model: RegistryUserModel,
     folderName: "userImgFol",
   },
-  //confirmUser
-  { url: "/confirmUserGetAll", model: ConfirmedUserModel },
-  { url: "/confirmUserGetOne/:id", model: ConfirmedUserModel },
+  //confirmedUser
+  { url: "/confirmedUser/getAll", model: ConfirmedUserModel },
+  { url: "/confirmedUser/getOne/:id", model: ConfirmedUserModel },
   {
-    url: "/confirmedUserTransferOne/:id",
+    url: "/registryUserToConfirmedUser/transferOne/:id",
     model: ConfirmedUserModel,
     modelToBeTransfer: RegistryUserModel,
   },
   {
-    url: "/confirmedUserPatchFile/:id",
+    url: "/confirmedUser/patchFile/:id",
     model: ConfirmedUserModel,
     folderName: "userImgFol",
     fileName: "userImg",
   },
   {
-    url: "/confirmedUserRemoveFile/:id",
+    url: "/confirmedUser/removeFile/:id",
     model: ConfirmedUserModel,
     folderName: "userImgFol",
   },
 ];
 
+//for systemUrl
 export const urlEvents = urlArr.map((item) => item.url);
 
+//for socket io
+export const events = urlEvents.map((url) => {
+  const firstWord = url.split("/")[1];
+  const secondWord =
+    url.split("/")[2].charAt(0).toUpperCase() + url.split("/")[2].slice(1);
+  return firstWord + secondWord;
+});
+
 urlArr.forEach((item) => {
-  checkUrlFormat(item.url);
-  if (item.url.includes("systemUrlGetException")) {
+  if (item.url.includes("getException")) {
     routes.get(item.url, (rq, rs) => getUrl(rq, rs));
   }
-  if (item.url.includes("GetLocal")) {
+  if (item.url.includes("getLocal")) {
     routes.get(item.url, (rq, rs) => getLocal(rq, rs, item.model));
   }
-  if (item.url.includes("GetAll")) {
+  if (item.url.includes("getAll")) {
     routes.get(item.url, (rq, rs) => getAll(rq, rs, item.model));
   }
-  if (item.url.includes("GetOne")) {
+  if (item.url.includes("getOne")) {
     routes.get(item.url, (rq, rs) => getOne(rq, rs, item.model));
   }
-  if (item.url.includes("PostFile")) {
+  if (item.url.includes("postFile")) {
     routes.post(
       item.url,
       upload(item.folderName, item.fileName).single("file"),
       (rq, rs) => postFile(rq, rs, item.model, item.folderName)
     );
   }
-  if (item.url.includes("PatchFile")) {
+  if (item.url.includes("patchFile")) {
     routes.patch(
       item.url,
       upload(item.folderName, item.fileName).single("file"),
       (rq, rs) => patchFile(rq, rs, item.model, item.folderName)
     );
   }
-  if (item.url.includes("RemoveFile")) {
+  if (item.url.includes("removeFile")) {
     routes.delete(item.url, (rq, rs) => {
       deleteFile(rq, rs, item.model, item.folderName);
     });
   }
-  if (item.url.includes("TransferOne")) {
+  if (item.url.includes("transferOne")) {
     routes.post(item.url, (rq, rs) => {
       transferOne(rq, rs, item.model, item.modelToBeTransfer);
     });
   }
 });
-
-function checkUrlFormat(url) {
-  const words = url.replace("/", "").split(/(?=[A-Z])/);
-  if (
-    words.length !== 4 ||
-    words.filter((word) => word.match(/[A-Z]/)).length !== 3
-  ) {
-    throw new Error(
-      "Please follow URL convention: 4 words and 3 capital letters"
-    );
-  }
-}

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 export default function Label({ children = "Label", htmlFor = "Label" }) {
   return (
     <label
-      className="flex w-full flex-col flex-wrap gap-1 text-sm"
+      className="flex w-full flex-col flex-wrap items-center justify-center gap-1 text-sm"
       htmlFor={htmlFor}
       title={htmlFor}
     >

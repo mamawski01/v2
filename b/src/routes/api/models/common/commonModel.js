@@ -37,7 +37,7 @@ export class CommonModel {
         type: String,
         required: [true, "Contact Person Number In Emergency is required."],
       },
-      file: { type: String, required: [true, "Image is required."] },
+      file: { type: String, required: [true, "File is required."] },
     };
   }
 }
