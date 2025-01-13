@@ -15,6 +15,8 @@ import GlobalProvider from "./context/GlobalProvider";
 import RegistryUserForm from "./pages/user/RegistryUserForm";
 import ConfirmedUserList from "./pages/user/ConfirmedUserList";
 import ConfirmedUserForm from "./pages/user/ConfirmedUserForm";
+import ManageUsers from "./pages/user/ManageUsers";
+import ManageUserForm from "./pages/user/ManageUserForm";
 
 const routes = [
   {
@@ -54,6 +56,15 @@ const routes = [
       {
         path: "homepage/confirmUserList/confirmedUserForm/:id",
         element: <ConfirmedUserForm />,
+      },
+
+      {
+        path: "homepage/manageUsers",
+        element: <ManageUsers />,
+      },
+      {
+        path: "homepage/manageUsers/manageUserForm/:id",
+        element: <ManageUserForm />,
       },
     ],
   },

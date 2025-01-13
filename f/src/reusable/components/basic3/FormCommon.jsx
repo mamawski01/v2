@@ -24,9 +24,6 @@ import Selector from "../basic0/Selector";
 import Date from "../basic0/Date";
 import File from "../basic0/File";
 
-//   const { id } = useParams();
-//   const edit = Boolean(id);
-
 export default function FormCommon({
   title,
   getOne,
@@ -50,13 +47,17 @@ export default function FormCommon({
 
   useEffect(() => {
     if (data && edit) {
-      const fetchData = {
-        ...data.data,
-        status: setItem(data, "status"),
-        gender: setItem(data, "gender"),
-        birthdate: setDate(data, "birthdate"),
-      };
-      console.log(data.data);
+      const fetchData = Object.keys(data.data).reduce((acc, key) => {
+        if (key.includes("Select")) {
+          acc[key] = setItem(data, key);
+        } else if (key.includes("Date")) {
+          acc[key] = setDate(data, key);
+        } else {
+          acc[key] = data.data[key];
+        }
+        return acc;
+      }, {});
+      console.log(fetchData);
       reset(fetchData);
     }
   }, [edit, data, reset]);
@@ -64,12 +65,18 @@ export default function FormCommon({
   async function onSubmit(data) {
     const trimmedData = trimStrings(data);
 
-    const formData = {
-      ...trimmedData,
-      birthdate: formatDate(trimmedData.birthdate.startDate),
-      gender: trimmedData.gender.value,
-      status: trimmedData.gender.value,
-    };
+    const formData = Object.keys(trimmedData).reduce((acc, key) => {
+      if (key.includes("Select")) {
+        acc[key] = trimmedData[key].value;
+      } else if (key.includes("Date")) {
+        acc[key] = formatDate(trimmedData[key].startDate);
+      } else {
+        acc[key] = trimmedData[key];
+      }
+      return acc;
+    }, {});
+
+    console.log(formData);
     mutate(
       edit
         ? patch(patchFile + id, await new OnSubmitForm(formData).file())
@@ -91,19 +98,59 @@ export default function FormCommon({
       >
         <Row>
           {fields.slice().map((item, i) => (
-            <div key={i}>
+            <Label htmlFor={item.field} key={i}>
+              {StrPhrase.capEach1stLetter([item.field])}
               {item.type === "text" && (
-                <Label htmlFor={item.field}>
-                  {StrPhrase.capEach1stLetter([item.field])}
-                  <InputForm
-                    id={item.field}
-                    reg={register}
-                    isRequired={{ required: item.isRequired }}
-                    errors={errors}
-                  />
-                </Label>
+                <InputForm
+                  id={item.field}
+                  type={item.type}
+                  reg={register}
+                  isRequired={{ required: item.isRequired }}
+                  errors={errors}
+                />
               )}
-            </div>
+              {item.type === "select" && (
+                <Selector
+                  id={item.field}
+                  Controller={Controller}
+                  control={control}
+                  errors={errors}
+                  options={item.options.map((option) => ({
+                    value: option,
+                    label: option,
+                  }))}
+                  rules={item.rules}
+                />
+              )}
+              {item.type === "date" && (
+                <Date
+                  id={item.field}
+                  Controller={Controller}
+                  control={control}
+                  errors={errors}
+                  rules={item.rules}
+                />
+              )}
+              {item.type === "email" && (
+                <InputForm
+                  id={item.field}
+                  type={item.type}
+                  reg={register}
+                  isRequired={{ required: item.isRequired }}
+                  errors={errors}
+                />
+              )}
+              {item.type === "file" && (
+                <File
+                  id={item.field}
+                  reg={register}
+                  isRequired={{ required: item.isRequired }}
+                  getValues={getValues}
+                  errors={errors}
+                  specifyFile={item.specifyFile}
+                />
+              )}
+            </Label>
           ))}
         </Row>
         {devBtn && (
@@ -127,211 +174,3 @@ FormCommon.propTypes = {
   postFile: PropTypes.string,
   title: PropTypes.string,
 };
-
-//  <Label htmlFor="firstName">
-//     first name
-//     <InputForm
-//       id="firstName"
-//       reg={register}
-//       isRequired={{ required: `firstName is required` }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="middleName">
-//     middle name
-//     <InputForm
-//       id="middleName"
-//       reg={register}
-//       isRequired={{ required: `middleName is required` }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="lastName">
-//     last name
-//     <InputForm
-//       id="lastName"
-//       reg={register}
-//       isRequired={{ required: `lastName is required` }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="gender">
-//     gender
-//     <Selector
-//       id="gender"
-//       Controller={Controller}
-//       control={control}
-//       errors={errors}
-//       options={[
-//         { value: "male", label: "male" },
-//         { value: "female", label: "female" },
-//       ]}
-//       rules={{
-//         validate: (value) => {
-//           if (!value?.value && !value?.label) {
-//             return `gender is required.`;
-//           }
-//           return true;
-//         },
-//       }}
-//     />
-//   </Label>
-//   <Label htmlFor="status">
-//     status
-//     <Selector
-//       id="status"
-//       Controller={Controller}
-//       control={control}
-//       errors={errors}
-//       options={[
-//         { value: "single", label: "single" },
-//         { value: "married", label: "married" },
-//       ]}
-//       rules={{
-//         validate: (value) => {
-//           if (!value?.value && !value?.label) {
-//             return `status is required.`;
-//           }
-//           return true;
-//         },
-//       }}
-//     />
-//   </Label>
-//   <Label htmlFor="birthdate">
-//     birthdate
-//     <Date
-//       Controller={Controller}
-//       control={control}
-//       id="birthdate"
-//       errors={errors}
-//       rules={{
-//         validate: (value) => {
-//           if (!value?.startDate && !value?.endDate) {
-//             return `birthdate is required.`;
-//           }
-//         },
-//       }}
-//     />
-//   </Label>
-//   <Label htmlFor="email">
-//     email
-//     <InputForm
-//       id="email"
-//       reg={register}
-//       type="email"
-//       isRequired={{ required: `email is required` }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="street">
-//     street
-//     <InputForm id="street" reg={register} errors={errors} />
-//   </Label>
-//   <Label htmlFor="purok">
-//     purok
-//     <InputForm id="purok" reg={register} errors={errors} />
-//   </Label>
-//   <Label htmlFor="brgy">
-//     brgy
-//     <InputForm
-//       id="brgy"
-//       reg={register}
-//       isRequired={{ required: `brgy is required` }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="city">
-//     city
-//     <InputForm
-//       id="city"
-//       reg={register}
-//       isRequired={{ required: `city is required` }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="province">
-//     province
-//     <InputForm
-//       id="province"
-//       reg={register}
-//       isRequired={{ required: `province is required` }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="country">
-//     country
-//     <InputForm
-//       id="country"
-//       reg={register}
-//       isRequired={{ required: `country is required` }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="contactNumber1">
-//     contact number 1
-//     <InputForm
-//       id="contactNumber1"
-//       reg={register}
-//       isRequired={{ required: `contactNumber1 is required` }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="contactNumber2">
-//     contact number 2
-//     <InputForm id="contactNumber2" reg={register} errors={errors} />
-//   </Label>
-//   <Label htmlFor="contactNumber3">
-//     contact number 3
-//     <InputForm id="contactNumber3" reg={register} errors={errors} />
-//   </Label>
-//   <Label htmlFor="SSS">
-//     SSS
-//     <InputForm id="SSS" reg={register} errors={errors} />
-//   </Label>
-//   <Label htmlFor="PagIbig">
-//     Pag-Ibig
-//     <InputForm id="PagIbig" reg={register} errors={errors} />
-//   </Label>
-//   <Label htmlFor="PhilHealth">
-//     PhilHealth
-//     <InputForm id="PhilHealth" reg={register} errors={errors} />
-//   </Label>
-//   <Label htmlFor="TIN">
-//     TIN
-//     <InputForm id="TIN" reg={register} errors={errors} />
-//   </Label>
-//   <Label htmlFor="contactPersonNameInEmergency">
-//     contact person name
-//     <InputForm
-//       id="contactPersonNameInEmergency"
-//       reg={register}
-//       isRequired={{
-//         required: `contact person name is required`,
-//       }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="contactPersonNumberInEmergency">
-//     contact person number
-//     <InputForm
-//       id="contactPersonNumberInEmergency"
-//       reg={register}
-//       isRequired={{
-//         required: `contact person number is required`,
-//       }}
-//       errors={errors}
-//     />
-//   </Label>
-//   <Label htmlFor="file">
-//     file
-//     <File
-//       id="file"
-//       reg={register}
-//       isRequired={{
-//         required: edit ? false : `file is required`,
-//       }}
-//       getValues={getValues}
-//       errors={errors}
-//       specifyFile=".png,.jpg,.jpeg"
-//     />
-//   </Label>

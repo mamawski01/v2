@@ -9,9 +9,15 @@ export class CommonModel {
         required: [true, "Middle Name is required."],
       },
       lastName: { type: String, required: [true, "Last Name is required."] },
-      gender: { type: String, required: [true, "Gender is required."] },
-      status: { type: String, required: [true, "Status is required."] },
-      birthdate: { type: String, required: [true, "Birthdate is required."] },
+      genderSelect: {
+        type: String,
+        required: [true, "GenderSelect is required."],
+      },
+      statusSelect: {
+        type: String,
+        required: [true, "StatusSelect is required."],
+      },
+      birthDate: { type: String, required: [true, "BirthDate is required."] },
       email: { type: String },
       street: { type: String },
       purok: { type: String },

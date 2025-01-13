@@ -4,25 +4,26 @@ import {
   confirmedUserGetOne,
   confirmedUserPatchFile,
 } from "../../reusable/hooks/useHook1";
-import {
-  onDeleteConfirmedUser,
-  resetDev,
-  userField,
-} from "./helpers/userHelper";
 
-export default function ConfirmedUserForm() {
+export default function ManageUserForm() {
   const { id } = useParams();
   const edit = Boolean(id);
   return (
     <FormCommon
-      title={"Confirmed User Form"}
+      title={"Manage User Form"}
       getOne={confirmedUserGetOne}
       patchFile={confirmedUserPatchFile}
-      onDelete={onDeleteConfirmedUser}
       id={id}
       edit={edit}
-      devBtn={resetDev}
-      fields={userField(edit)}
-    ></FormCommon>
+      fields={[
+        {
+          field: "dataId",
+          type: "text",
+          isRequired: `dataId is required`,
+        },
+      ]}
+    >
+      ManageUserForm
+    </FormCommon>
   );
 }
