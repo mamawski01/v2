@@ -14,7 +14,6 @@ import ImageProfile from "../../reusable/components/basic0/ImageProfile";
 import Row from "../../reusable/components/basic0/Row";
 import CreateSomething from "../../reusable/components/basic1/CreateSomething";
 import Loading from "../../reusable/components/basic1/Loading";
-import BtnAddInLink from "../../reusable/components/basic2/BtnAddInLink";
 import { confirmedUserGetAll, useFetch } from "../../reusable/hooks/useHook1";
 import BtnEditLink from "../../reusable/components/basic2/BtnEditLink";
 
@@ -40,10 +39,10 @@ export default function ManageUsers() {
         {confirmUsers.length > 0 && (
           <ContentBox1>
             <div className="flex w-full justify-end">
-              <div className="flex w-full justify-end">
-                <BtnAddInLink to="/homepage/registryUserList/registryUserForm">
-                  Add User
-                </BtnAddInLink>
+              <div>
+                <BtnLink to="/homepage/registryUserList">
+                  Go to Registry User
+                </BtnLink>
               </div>
             </div>
             <Row wider={true}>

@@ -10,7 +10,6 @@ const { data: urlData } = await get("/systemUrl/getException");
 
 const events = urlData?.events && urlData?.events;
 export const urlEvents = urlData?.urlEvents && urlData.urlEvents;
-// console.log(events);
 
 export const registryUserGetAll = colonRemove(urlEvents[1]);
 export const registryUserGetOne = colonRemove(urlEvents[2]);

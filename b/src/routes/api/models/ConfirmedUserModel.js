@@ -12,8 +12,15 @@ const schema = new Schema({
   ...CommonModel.registryUser(),
   dataId: {
     type: String,
-    unique: true,
-    default: uuidv4(),
+    unique: [true, "dataId already exist!"],
+    default: () => uuidv4({ namespace: collectionName }),
+  },
+  username: {
+    type: String,
+    default: "dummyUsername",
+  },
+  password: {
+    type: String,
   },
 });
 

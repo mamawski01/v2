@@ -1,6 +1,8 @@
 "use strict";
 
 import { Server } from "socket.io";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 import { events, urlEvents } from "../routes.js";
 import { removeFile, fileUrl } from "../../utils/bHelpers.js";
@@ -31,13 +33,13 @@ export function socketServer(socketServe) {
 
 class DataHandler {
   constructor() {}
-  static isFound(rs, data) {
+  static async isFound(rs, data) {
+    console.log(data);
     return rs.status(200).send(data);
   }
   static ifError(rq, rs, error) {
-    console.log(error);
     removeFile(rq.file?.path);
-    return rs.status(500).send(error.message);
+    return rs.status(500).send(error.message || error);
   }
   static duplicatedEntry(rq, rs, duplicate) {
     removeFile(rq.file?.path);
@@ -51,8 +53,14 @@ class DataHandler {
     return rs.status(404).send(`data not found.`);
   }
   static delPrevFile(folderName, file) {
-    const imageUrl = file.substring(file.lastIndexOf("/") + 1);
-    removeFile(fileLoc(folderName) + "/" + imageUrl);
+    const fileUrl = file.substring(file.lastIndexOf("/") + 1);
+    removeFile(fileLoc(folderName) + "/" + fileUrl);
+  }
+  static async uniqueDataId(rq, rs, model, dataId) {
+    const dataIdExist = await model.exists({
+      dataId,
+    });
+    if (dataIdExist) return DataHandler.duplicatedEntry(rq, rs, dataId);
   }
 }
 
@@ -107,7 +115,7 @@ export async function postFile(rq, rs, model, folderName) {
 
 export async function patchFile(rq, rs, model, folderName) {
   try {
-    const { id, dataId = "" } = rq.params;
+    const { id } = rq.body;
 
     //userPrevFile with rq.file?.filename
     const user = await model.findById(id);
@@ -115,14 +123,45 @@ export async function patchFile(rq, rs, model, folderName) {
     rq.file?.filename && DataHandler.delPrevFile(folderName, user.file);
     //userPrevFile with rq.file?.filename
 
-    //check if dataId exist and delete image, dataId must be unique
-    const dataIdExist = await model.exists({
-      dataId,
-    });
-    if (dataIdExist) return DataHandler.duplicatedEntry(rq, rs, dataIdExist);
-    //check if dataId exist and delete image, dataId must be unique
     const data = await model.findByIdAndUpdate(id, {
       ...rq.body,
+      file: rq.file?.filename && fileUrl(`${folderName}/`) + rq.file.filename,
+    });
+    return DataHandler.isFound(rs, data);
+  } catch (error) {
+    return DataHandler.ifError(rq, rs, error);
+  }
+}
+
+export async function patchPasswordFile(rq, rs, model, folderName) {
+  try {
+    const { id } = rq.params;
+    const { username, password, confirmPassword } = rq.body;
+    console.log(confirmPassword);
+
+    if (!username || !password) {
+      return DataHandler.ifError(rq, rs, "Username and password are required");
+    }
+
+    if (password !== confirmPassword) {
+      return DataHandler.ifError(
+        rq,
+        rs,
+        "Password and confirmPassword does not match"
+      );
+    }
+
+    //userPrevFile with rq.file?.filename
+    const user = await model.findById(id);
+    if (!user) return DataHandler.dataNotFound(rq, rs);
+    rq.file?.filename && DataHandler.delPrevFile(folderName, user.file);
+    //userPrevFile with rq.file?.filename
+
+    const encryptedPass = await bcrypt.hash(password, 10);
+
+    const data = await model.findByIdAndUpdate(id, {
+      ...rq.body,
+      password: encryptedPass,
       file: rq.file?.filename && fileUrl(`${folderName}/`) + rq.file.filename,
     });
     return DataHandler.isFound(rs, data);
@@ -148,21 +187,48 @@ export async function deleteFile(rq, rs, model, folderName) {
 
 export async function transferOne(rq, rs, model, modelToBeTransfer) {
   try {
-    const { id, dataId } = rq.params;
+    const { id } = rq.params;
+
     const modelToReplace = await modelToBeTransfer.findById(id);
-    if (!modelToReplace) DataHandler.dataNotFound(rq, rs);
+    if (!modelToReplace) return DataHandler.dataNotFound(rq, rs);
 
-    //check if dataId exist and delete image, dataId must be unique
-    const dataIdExist = await model.exists({
-      dataId,
-    });
-    if (dataIdExist) return DataHandler.duplicatedEntry(rq, rs, dataIdExist);
-    //check if dataId exist and delete image, dataId must be unique
-
-    await modelToBeTransfer.findByIdAndDelete(id);
     const modelToReplaceLean = modelToReplace.toObject();
     const data = await model.create(modelToReplaceLean);
+    if (data) await modelToBeTransfer.findByIdAndDelete(id);
+    if (data) await data.save();
     return DataHandler.isFound(rs, data);
+  } catch (error) {
+    return DataHandler.ifError(rq, rs, error);
+  }
+}
+
+export async function transferAuthenticate(rq, rs, model, modelToBeTransfer) {
+  try {
+    const { id } = rq.params;
+
+    const modelToReplace = await modelToBeTransfer.findById(id);
+    if (!modelToReplace) return DataHandler.dataNotFound(rq, rs);
+
+    const modelToReplaceLean = modelToReplace.toObject();
+    const data = await model.create(modelToReplaceLean);
+    if (data) await modelToBeTransfer.findByIdAndDelete(id);
+    if (data) await data.save();
+    const token = jwt.sign(
+      { objId: data._id, username: data.username },
+      process.env.TOKEN_KEY,
+      {
+        expiresIn: "30m",
+      }
+    );
+
+    // return rs.status(201).json({
+    //   dataDetails: {
+    //     username: data.username,
+    //     token,
+    //   },
+    // });
+
+    return DataHandler.isFound(rs, { token, data });
   } catch (error) {
     return DataHandler.ifError(rq, rs, error);
   }

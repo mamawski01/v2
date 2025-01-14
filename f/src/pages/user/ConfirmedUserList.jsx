@@ -11,6 +11,7 @@ export default function ConfirmedUserList() {
       title="Confirmed User List"
       onDelete={onDeleteConfirmedUser}
       to="confirmedUserForm/"
+      toRegistryUserList={true}
     ></UserListHelper>
   );
 }

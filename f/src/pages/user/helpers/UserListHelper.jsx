@@ -23,6 +23,7 @@ import BtnSave from "../../../reusable/components/basic2/BtnSave";
 import BtnEditLink from "../../../reusable/components/basic2/BtnEditLink";
 import BtnDelete from "../../../reusable/components/basic2/BtnDelete";
 import { useMutate } from "../../../reusable/hooks/useHook1";
+import BtnLink from "../../../reusable/components/basic0/BtnLink";
 
 export default function UserListHelper({
   data,
@@ -30,6 +31,7 @@ export default function UserListHelper({
   onTransfer,
   onDelete,
   to = "",
+  toRegistryUserList = false,
 }) {
   const { mutate, isPending } = useMutate();
   const users = data?.data?.reverse();
@@ -41,13 +43,29 @@ export default function UserListHelper({
         {users.length === 0 && (
           <CreateSomething>
             <p>List is empty, create something...</p>
-            <BtnAddInLink to="registryUserForm">Add User</BtnAddInLink>
+            {toRegistryUserList ? (
+              <div>
+                <BtnLink to="/homepage/registryUserList">
+                  Go to Registry User
+                </BtnLink>
+              </div>
+            ) : (
+              <BtnAddInLink to="registryUserForm">Add User</BtnAddInLink>
+            )}
           </CreateSomething>
         )}
         {users.length > 0 && (
           <ContentBox1>
             <div className="flex w-full justify-end">
-              <BtnAddInLink to="registryUserForm">Add User</BtnAddInLink>
+              {toRegistryUserList ? (
+                <div>
+                  <BtnLink to="/homepage/registryUserList">
+                    Go to Registry User
+                  </BtnLink>
+                </div>
+              ) : (
+                <BtnAddInLink to="registryUserForm">Add User</BtnAddInLink>
+              )}
             </div>
             <Row wider={true}>
               {users.slice().map((data, i) => (
@@ -132,4 +150,5 @@ UserListHelper.propTypes = {
   onTransfer: PropTypes.func,
   title: PropTypes.string,
   to: PropTypes.string,
+  toRegistryUserList: PropTypes.bool,
 };

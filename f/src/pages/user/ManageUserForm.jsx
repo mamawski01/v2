@@ -21,6 +21,16 @@ export default function ManageUserForm() {
           type: "text",
           isRequired: `dataId is required`,
         },
+        {
+          field: "username",
+          type: "text",
+          isRequired: `username is required`,
+        },
+        {
+          field: "password",
+          type: "password",
+          isRequired: `password is required`,
+        },
       ]}
     >
       ManageUserForm

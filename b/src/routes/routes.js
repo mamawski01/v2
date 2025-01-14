@@ -8,7 +8,9 @@ import {
   getOne,
   getUrl,
   patchFile,
+  patchPasswordFile,
   postFile,
+  transferAuthenticate,
   transferOne,
 } from "./api/bApi.js";
 import { upload } from "../utils/multer.js";
@@ -44,12 +46,12 @@ export const urlArr = [
   { url: "/confirmedUser/getAll", model: ConfirmedUserModel },
   { url: "/confirmedUser/getOne/:id", model: ConfirmedUserModel },
   {
-    url: "/registryUserToConfirmedUser/transferOne/:id",
+    url: "/registryUserToConfirmedUser/transferAuthenticate/:id",
     model: ConfirmedUserModel,
     modelToBeTransfer: RegistryUserModel,
   },
   {
-    url: "/confirmedUser/patchFile/:id",
+    url: "/confirmedUser/patchPasswordFile/:id",
     model: ConfirmedUserModel,
     folderName: "userImgFol",
     fileName: "userImg",
@@ -99,6 +101,13 @@ urlArr.forEach((item) => {
       (rq, rs) => patchFile(rq, rs, item.model, item.folderName)
     );
   }
+  if (item.url.includes("patchPasswordFile")) {
+    routes.patch(
+      item.url,
+      upload(item.folderName, item.fileName).single("file"),
+      (rq, rs) => patchPasswordFile(rq, rs, item.model, item.folderName)
+    );
+  }
   if (item.url.includes("removeFile")) {
     routes.delete(item.url, (rq, rs) => {
       deleteFile(rq, rs, item.model, item.folderName);
@@ -107,6 +116,11 @@ urlArr.forEach((item) => {
   if (item.url.includes("transferOne")) {
     routes.post(item.url, (rq, rs) => {
       transferOne(rq, rs, item.model, item.modelToBeTransfer);
+    });
+  }
+  if (item.url.includes("transferAuthenticate")) {
+    routes.post(item.url, (rq, rs) => {
+      transferAuthenticate(rq, rs, item.model, item.modelToBeTransfer);
     });
   }
 });

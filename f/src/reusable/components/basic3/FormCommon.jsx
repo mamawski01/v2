@@ -92,7 +92,7 @@ export default function FormCommon({
         onSubmit={handleSubmit(onSubmit, onError)}
         isPending={isPending}
         superReset={superReset}
-        onDelete={() => onDelete(id)}
+        onDelete={onDelete ? () => onDelete(id) : null}
         edit={edit}
         formName={edit ? `${data.data.firstName} ${data.data.lastName}` : ""}
       >
@@ -101,6 +101,24 @@ export default function FormCommon({
             <Label htmlFor={item.field} key={i}>
               {StrPhrase.capEach1stLetter([item.field])}
               {item.type === "text" && (
+                <InputForm
+                  id={item.field}
+                  type={item.type}
+                  reg={register}
+                  isRequired={{ required: item.isRequired }}
+                  errors={errors}
+                />
+              )}
+              {item.type === "email" && (
+                <InputForm
+                  id={item.field}
+                  type={item.type}
+                  reg={register}
+                  isRequired={{ required: item.isRequired }}
+                  errors={errors}
+                />
+              )}
+              {item.type === "password" && (
                 <InputForm
                   id={item.field}
                   type={item.type}
@@ -129,15 +147,6 @@ export default function FormCommon({
                   control={control}
                   errors={errors}
                   rules={item.rules}
-                />
-              )}
-              {item.type === "email" && (
-                <InputForm
-                  id={item.field}
-                  type={item.type}
-                  reg={register}
-                  isRequired={{ required: item.isRequired }}
-                  errors={errors}
                 />
               )}
               {item.type === "file" && (
