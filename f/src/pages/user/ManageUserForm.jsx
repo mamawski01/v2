@@ -31,6 +31,11 @@ export default function ManageUserForm() {
           type: "password",
           isRequired: `password is required`,
         },
+        {
+          field: "confirmPassword",
+          type: "password",
+          isRequired: `passwordConfirm is required`,
+        },
       ]}
     >
       ManageUserForm

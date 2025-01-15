@@ -13,15 +13,12 @@ export async function onDeleteRegistryUser(mutate, id) {
   }
 }
 
-export async function onDeleteConfirmedUser(mutate, id, userId) {
+export async function onDeleteConfirmedUser(mutate, id, weeklySchedule) {
   const confirmDelete = await swalAlert(
     "Yes, delete a confirmed user and all of its data.",
   );
   if (confirmDelete.isConfirmed) {
     mutate(remove(confirmedUserRemoveFile + id));
-    if (userId) {
-      ("");
-    }
   }
 }
 

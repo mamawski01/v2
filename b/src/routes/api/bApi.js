@@ -3,6 +3,7 @@
 import { Server } from "socket.io";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
 
 import { events, urlEvents } from "../routes.js";
 import { removeFile, fileUrl } from "../../utils/bHelpers.js";
@@ -33,9 +34,24 @@ export function socketServer(socketServe) {
 
 class DataHandler {
   constructor() {}
-  static async isFound(rs, data) {
-    console.log(data);
+  static isFound(rs, data) {
     return rs.status(200).send(data);
+  }
+  static authenticate(rs, data) {
+    const token = jwt.sign(
+      { objId: data._id, username: data.username },
+      process.env.TOKEN_KEY,
+      {
+        expiresIn: "4h",
+      }
+    );
+
+    return rs.status(201).json({
+      dataDetails: {
+        username: data.username,
+        token,
+      },
+    });
   }
   static ifError(rq, rs, error) {
     removeFile(rq.file?.path);
@@ -185,50 +201,59 @@ export async function deleteFile(rq, rs, model, folderName) {
   }
 }
 
-export async function transferOne(rq, rs, model, modelToBeTransfer) {
+export async function transferOne(
+  rq,
+  rs,
+  model,
+  collectionName,
+  modelToBeTransfer,
+  modelToBeAddedObj
+) {
   try {
     const { id } = rq.params;
 
-    const modelToReplace = await modelToBeTransfer.findById(id);
-    if (!modelToReplace) return DataHandler.dataNotFound(rq, rs);
+    const modelToTransfer = await modelToBeTransfer.findById(id);
+    if (!modelToTransfer) return DataHandler.dataNotFound(rq, rs);
+    const modelToTransferLean = modelToTransfer.toObject();
 
-    const modelToReplaceLean = modelToReplace.toObject();
-    const data = await model.create(modelToReplaceLean);
+    const modelToAddedObj = await modelToBeAddedObj.model.create({
+      firstName: modelToTransferLean.firstName,
+      middleName: modelToTransferLean.middleName,
+      lastName: modelToTransferLean.lastName,
+    });
+    const data = await model.create({
+      ...modelToTransferLean,
+      dataId: uuidv4({ namespace: collectionName }),
+      weeklySchedule: modelToAddedObj._id,
+    });
+    console.log(data);
     if (data) await modelToBeTransfer.findByIdAndDelete(id);
-    if (data) await data.save();
     return DataHandler.isFound(rs, data);
   } catch (error) {
     return DataHandler.ifError(rq, rs, error);
   }
 }
 
-export async function transferAuthenticate(rq, rs, model, modelToBeTransfer) {
+export async function loginFile(rq, rs, model) {
   try {
-    const { id } = rq.params;
+    const { username, password } = rq.body;
 
-    const modelToReplace = await modelToBeTransfer.findById(id);
-    if (!modelToReplace) return DataHandler.dataNotFound(rq, rs);
+    const data = await model.findOne({ username });
 
-    const modelToReplaceLean = modelToReplace.toObject();
-    const data = await model.create(modelToReplaceLean);
-    if (data) await modelToBeTransfer.findByIdAndDelete(id);
-    if (data) await data.save();
-    const token = jwt.sign(
-      { objId: data._id, username: data.username },
-      process.env.TOKEN_KEY,
-      {
-        expiresIn: "30m",
-      }
-    );
+    if (data && (await bcrypt.compare(password, data.password))) {
+      return DataHandler.authenticate(rs, data);
+    }
 
-    // return rs.status(201).json({
-    //   dataDetails: {
-    //     username: data.username,
-    //     token,
-    //   },
-    // });
+    return rs.status(400).send("Invalid credentials. Please try again.");
+  } catch (error) {
+    return DataHandler.ifError(rq, rs, error);
+  }
+}
 
-    return DataHandler.isFound(rs, { token, data });
+export async function postOne(rq, rs, model) {
+  try {
+    const data = await model.create(rq.body);
+    return DataHandler.isFound(rs, data);
   } catch (error) {
     return DataHandler.ifError(rq, rs, error);
   }

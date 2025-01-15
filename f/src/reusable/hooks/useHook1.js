@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Joi from "joi";
+import dayjs from "dayjs";
 
 import { fSocket, get } from "../../api/api";
 import { schemaResult } from "../../lib/joiValidator";
-import dayjs from "dayjs";
 
 const { data: urlData } = await get("/systemUrl/getException");
 
 const events = urlData?.events && urlData?.events;
 export const urlEvents = urlData?.urlEvents && urlData.urlEvents;
 
+export const dummyUrl = "/dummy/duh";
 export const registryUserGetAll = colonRemove(urlEvents[1]);
 export const registryUserGetOne = colonRemove(urlEvents[2]);
 export const registryUserPostFile = colonRemove(urlEvents[3]);
@@ -21,6 +22,7 @@ export const confirmedUserGetOne = colonRemove(urlEvents[7]);
 export const registryUserToConfirmedUserTransferOne = colonRemove(urlEvents[8]);
 export const confirmedUserPatchFile = colonRemove(urlEvents[9]);
 export const confirmedUserRemoveFile = colonRemove(urlEvents[10]);
+export const confirmedUserLoginFile = colonRemove(urlEvents[11]);
 
 function colonRemove(url) {
   return url.split(":")[0];
@@ -98,12 +100,12 @@ export function usePreFetch(arr) {
 }
 
 export function useMutate() {
-  const { isPending, mutate } = useMutation({
+  const { isPending, mutate, data } = useMutation({
     mutationFn: async (method) => {
       method;
     },
   });
-  return { isPending, mutate };
+  return { isPending, mutate, data };
 }
 
 export function useLocalStorage(key, initialValue) {

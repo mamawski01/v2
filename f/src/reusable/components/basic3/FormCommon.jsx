@@ -1,7 +1,12 @@
 import PropTypes from "prop-types";
 import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
-import { useFetch, useMutate } from "../../hooks/useHook1";
+import {
+  confirmedUserLoginFile,
+  useFetch,
+  useMutate,
+} from "../../hooks/useHook1";
 import {
   onError,
   OnSubmitForm,
@@ -34,7 +39,10 @@ export default function FormCommon({
   edit = false,
   fields = [],
   devBtn,
+  login,
 }) {
+  const navigate = useNavigate();
+
   const { register, handleSubmit, formState, reset, control, getValues } =
     useForm();
   const { errors } = formState;
@@ -77,11 +85,17 @@ export default function FormCommon({
     }, {});
 
     console.log(formData);
-    mutate(
-      edit
-        ? patch(patchFile + id, await new OnSubmitForm(formData).file())
-        : post(postFile, await new OnSubmitForm(formData).file()),
-    );
+    login
+      ? login(
+          confirmedUserLoginFile,
+          await new OnSubmitForm(formData).file(),
+          navigate,
+        )
+      : mutate(
+          edit
+            ? patch(patchFile + id, await new OnSubmitForm(formData).file())
+            : post(postFile, await new OnSubmitForm(formData).file()),
+        );
   }
 
   if (!data && edit) return <Loading></Loading>;
@@ -178,6 +192,7 @@ FormCommon.propTypes = {
   fields: PropTypes.array,
   getOne: PropTypes.string,
   id: PropTypes.string,
+  login: PropTypes.func,
   onDelete: PropTypes.func,
   patchFile: PropTypes.string,
   postFile: PropTypes.string,

@@ -43,10 +43,25 @@ export async function get(url) {
 
 export async function post(url, data) {
   try {
-    const req = await apiClient.post(url, data);
-    f2bFx(url, req);
+    const rs = await apiClient.post(url, data);
+    f2bFx(url, rs);
+    console.log(rs);
     toast.custom(<ToastSuccess>Saved successfully</ToastSuccess>);
-    return req;
+    return rs;
+  } catch (exception) {
+    return DataHandler.ifError(exception);
+  }
+}
+
+export async function login(url, data, navigate) {
+  try {
+    const rs = await apiClient.post(url, data);
+    toast.custom(<ToastSuccess>Logged In successfully</ToastSuccess>);
+    const { dataDetails } = rs.data;
+
+    localStorage.setItem(dataDetails.username, JSON.stringify(dataDetails));
+    // navigate("/");
+    return rs;
   } catch (exception) {
     return DataHandler.ifError(exception);
   }
@@ -54,10 +69,10 @@ export async function post(url, data) {
 
 export async function patch(url, data) {
   try {
-    const req = await apiClient.patch(url, data);
-    f2bFx(url, req);
+    const rs = await apiClient.patch(url, data);
+    f2bFx(url, rs);
     toast.custom(<ToastSuccess>Edited successfully</ToastSuccess>);
-    return req;
+    return rs;
   } catch (exception) {
     return DataHandler.ifError(exception);
   }
@@ -65,10 +80,10 @@ export async function patch(url, data) {
 
 export async function remove(url) {
   try {
-    const req = await apiClient.delete(url);
-    f2bFx(url, req);
+    const rs = await apiClient.delete(url);
+    f2bFx(url, rs);
     toast.custom(<ToastSuccess>Deleted successfully</ToastSuccess>);
-    return req;
+    return rs;
   } catch (exception) {
     return DataHandler.ifError(exception);
   }

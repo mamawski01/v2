@@ -17,6 +17,7 @@ import ConfirmedUserList from "./pages/user/ConfirmedUserList";
 import ConfirmedUserForm from "./pages/user/ConfirmedUserForm";
 import ManageUsers from "./pages/user/ManageUsers";
 import ManageUserForm from "./pages/user/ManageUserForm";
+import Login from "./pages/user/Login";
 
 const routes = [
   {
@@ -67,6 +68,10 @@ const routes = [
         element: <ManageUserForm />,
       },
     ],
+  },
+  {
+    path: "homepage/login",
+    element: <Login />,
   },
 ];
 

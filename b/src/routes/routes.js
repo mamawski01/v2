@@ -7,15 +7,17 @@ import {
   getLocal,
   getOne,
   getUrl,
+  loginFile,
   patchFile,
   patchPasswordFile,
   postFile,
-  transferAuthenticate,
+  postOne,
   transferOne,
 } from "./api/bApi.js";
 import { upload } from "../utils/multer.js";
 import RegistryUserModel from "./api/models/RegistryUserModel.js";
 import ConfirmedUserModel from "./api/models/ConfirmedUserModel.js";
+import WeeklyUserScheduleModel from "./api/models/WeeklyUserScheduleModel.js";
 
 export const routes = express.Router();
 
@@ -46,9 +48,16 @@ export const urlArr = [
   { url: "/confirmedUser/getAll", model: ConfirmedUserModel },
   { url: "/confirmedUser/getOne/:id", model: ConfirmedUserModel },
   {
-    url: "/registryUserToConfirmedUser/transferAuthenticate/:id",
+    url: "/registryUserToConfirmedUser/transferOne/:id",
     model: ConfirmedUserModel,
+    collectionName: "ConfirmedUserModel",
     modelToBeTransfer: RegistryUserModel,
+    modelToBeAddedObj: [
+      {
+        model: WeeklyUserScheduleModel,
+        entry: "weeklyUserScheduleModel",
+      },
+    ],
   },
   {
     url: "/confirmedUser/patchPasswordFile/:id",
@@ -60,6 +69,10 @@ export const urlArr = [
     url: "/confirmedUser/removeFile/:id",
     model: ConfirmedUserModel,
     folderName: "userImgFol",
+  },
+  {
+    url: "/confirmedUser/loginFile",
+    model: ConfirmedUserModel,
   },
 ];
 
@@ -115,12 +128,28 @@ urlArr.forEach((item) => {
   }
   if (item.url.includes("transferOne")) {
     routes.post(item.url, (rq, rs) => {
-      transferOne(rq, rs, item.model, item.modelToBeTransfer);
+      transferOne(
+        rq,
+        rs,
+        item.model,
+        item.collectionName,
+        item.modelToBeTransfer,
+        item.modelToBeAddedObj
+      );
     });
   }
-  if (item.url.includes("transferAuthenticate")) {
+  if (item.url.includes("loginFile")) {
+    routes.post(
+      item.url,
+      upload(item.folderName, item.fileName).single("file"),
+      (rq, rs) => {
+        loginFile(rq, rs, item.model);
+      }
+    );
+  }
+  if (item.url.includes("postOne")) {
     routes.post(item.url, (rq, rs) => {
-      transferAuthenticate(rq, rs, item.model, item.modelToBeTransfer);
+      postOne(rq, rs, item.model);
     });
   }
 });

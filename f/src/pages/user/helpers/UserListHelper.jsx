@@ -94,8 +94,11 @@ export default function UserListHelper({
                       </BtnSave>
                     )}
                     <BtnEditLink to={to + data._id}>Edit User</BtnEditLink>
+
                     <BtnDelete
-                      onClick={() => onDelete(mutate, data._id)}
+                      onClick={() =>
+                        onDelete(mutate, data._id, data.weeklySchedule)
+                      }
                       isPending={isPending}
                     >
                       Delete User

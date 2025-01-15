@@ -65,7 +65,7 @@ export default function ManageUsers() {
                     <div className="flex justify-center">
                       <div>
                         <BtnEditLink to={`manageUserForm/${data._id}`}>
-                          Edit User Id
+                          Authenticate User
                         </BtnEditLink>
                       </div>
                     </div>
