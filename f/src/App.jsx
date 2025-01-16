@@ -18,6 +18,7 @@ import ConfirmedUserForm from "./pages/user/ConfirmedUserForm";
 import ManageUsers from "./pages/user/ManageUsers";
 import ManageUserForm from "./pages/user/ManageUserForm";
 import Login from "./pages/user/Login";
+import ProtectedRoutes from "./context/ProtectedRoutes";
 
 const routes = [
   {
@@ -31,41 +32,77 @@ const routes = [
 
       {
         path: "homepage",
-        element: <Homepage />,
+        element: (
+          <ProtectedRoutes>
+            <Homepage />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "homepage/registryUserList",
-        element: <RegistryUserList />,
+        element: (
+          <ProtectedRoutes>
+            <RegistryUserList />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "homepage/registryUserList/registryUserForm",
-        element: <RegistryUserForm />,
+        element: (
+          <ProtectedRoutes>
+            <RegistryUserForm />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "homepage/registryUserList/registryUserForm/:id",
-        element: <RegistryUserForm />,
+        element: (
+          <ProtectedRoutes>
+            <RegistryUserForm />
+          </ProtectedRoutes>
+        ),
       },
 
       {
         path: "homepage/confirmUserList",
-        element: <ConfirmedUserList />,
+        element: (
+          <ProtectedRoutes>
+            <ConfirmedUserList />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "homepage/confirmUserList/confirmedUserForm/",
-        element: <ConfirmedUserForm />,
+        element: (
+          <ProtectedRoutes>
+            <ConfirmedUserForm />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "homepage/confirmUserList/confirmedUserForm/:id",
-        element: <ConfirmedUserForm />,
+        element: (
+          <ProtectedRoutes>
+            <ConfirmedUserForm />
+          </ProtectedRoutes>
+        ),
       },
 
       {
         path: "homepage/manageUsers",
-        element: <ManageUsers />,
+        element: (
+          <ProtectedRoutes>
+            <ManageUsers />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "homepage/manageUsers/manageUserForm/:id",
-        element: <ManageUserForm />,
+        element: (
+          <ProtectedRoutes>
+            <ManageUserForm />
+          </ProtectedRoutes>
+        ),
       },
     ],
   },

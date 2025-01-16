@@ -3,7 +3,6 @@
 import { Server } from "socket.io";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { v4 as uuidv4 } from "uuid";
 
 import { events, urlEvents } from "../routes.js";
 import { removeFile, fileUrl } from "../../utils/bHelpers.js";
@@ -205,7 +204,6 @@ export async function transferOne(
   rq,
   rs,
   model,
-  collectionName,
   modelToBeTransfer,
   modelToBeAddedObj
 ) {
@@ -216,17 +214,17 @@ export async function transferOne(
     if (!modelToTransfer) return DataHandler.dataNotFound(rq, rs);
     const modelToTransferLean = modelToTransfer.toObject();
 
-    const modelToAddedObj = await modelToBeAddedObj.model.create({
-      firstName: modelToTransferLean.firstName,
-      middleName: modelToTransferLean.middleName,
-      lastName: modelToTransferLean.lastName,
-    });
+    const addedObjects = await Promise.all(
+      modelToBeAddedObj.map(async (obj) => {
+        const addedObj = await obj.model.create({});
+        return { [obj.entry]: String(addedObj._id) };
+      })
+    );
+
     const data = await model.create({
       ...modelToTransferLean,
-      dataId: uuidv4({ namespace: collectionName }),
-      weeklySchedule: modelToAddedObj._id,
+      ...addedObjects.reduce((acc, curr) => ({ ...acc, ...curr }), {}),
     });
-    console.log(data);
     if (data) await modelToBeTransfer.findByIdAndDelete(id);
     return DataHandler.isFound(rs, data);
   } catch (error) {

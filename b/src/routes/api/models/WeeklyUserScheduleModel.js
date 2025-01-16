@@ -5,9 +5,6 @@ const collectionName = "WeeklyUserSchedule";
 const { Schema } = mongoose;
 
 const schema = new Schema({
-  firstName: { type: String },
-  middleName: { type: String },
-  lastName: { type: String },
   brkDuration: { type: String, default: "60 mins" },
   monday: {
     timeIn: { type: String, default: "09:00 am" },

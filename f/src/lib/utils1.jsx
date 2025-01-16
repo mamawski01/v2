@@ -20,7 +20,7 @@ export function documentTitle() {
     ? StrPhrase.capEach1stLetter(location.pathname.split("/").slice(-3))[0]
     : finalDocTitle;
   //go to index.html, edit the <title></title>
-  const documentTitleStr = `${finalDocTitle2} | Tiberio Optical`;
+  const documentTitleStr = `${finalDocTitle2} | Tiberio Eyecare Clinic`;
 
   return (document.title = documentTitleStr);
 }

@@ -31,11 +31,14 @@ class DataHandler {
   }
 }
 
-export async function get(url) {
+export async function get(url, user) {
   try {
-    const data = await apiClient.get(url);
-    f2bFx(url, data);
-    return data;
+    if (user !== "Guest") {
+      authenticate(user);
+      const data = await apiClient.get(url);
+      f2bFx(url, data);
+      return data;
+    }
   } catch (exception) {
     return DataHandler.ifError(exception);
   }
@@ -45,22 +48,7 @@ export async function post(url, data) {
   try {
     const rs = await apiClient.post(url, data);
     f2bFx(url, rs);
-    console.log(rs);
     toast.custom(<ToastSuccess>Saved successfully</ToastSuccess>);
-    return rs;
-  } catch (exception) {
-    return DataHandler.ifError(exception);
-  }
-}
-
-export async function login(url, data, navigate) {
-  try {
-    const rs = await apiClient.post(url, data);
-    toast.custom(<ToastSuccess>Logged In successfully</ToastSuccess>);
-    const { dataDetails } = rs.data;
-
-    localStorage.setItem(dataDetails.username, JSON.stringify(dataDetails));
-    // navigate("/");
     return rs;
   } catch (exception) {
     return DataHandler.ifError(exception);
@@ -84,6 +72,47 @@ export async function remove(url) {
     f2bFx(url, rs);
     toast.custom(<ToastSuccess>Deleted successfully</ToastSuccess>);
     return rs;
+  } catch (exception) {
+    return DataHandler.ifError(exception);
+  }
+}
+
+function authenticate(user) {
+  apiClient.interceptors.request.use(
+    (config) => {
+      const dataDetails = localStorage.getItem(user);
+      if (dataDetails) {
+        const token = JSON.parse(dataDetails).token;
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (err) => Promise.reject(err),
+  );
+}
+
+export async function login(url, data, navigate, userSet) {
+  try {
+    const rs = await apiClient.post(url, data);
+    toast.custom(<ToastSuccess>Logged In successfully</ToastSuccess>);
+    const { dataDetails } = rs.data;
+    userSet(dataDetails.username);
+    localStorage.setItem(dataDetails.username, JSON.stringify(dataDetails));
+    navigate("/Homepage");
+    return rs;
+  } catch (exception) {
+    return DataHandler.ifError(exception);
+  }
+}
+
+export async function logout(navigate, userSet, user) {
+  console.log(user);
+  try {
+    localStorage.removeItem(user);
+    user !== "Guest" &&
+      toast.custom(<ToastSuccess>Logged Out successfully</ToastSuccess>);
+    navigate("/homepage/login");
+    userSet("Guest");
   } catch (exception) {
     return DataHandler.ifError(exception);
   }

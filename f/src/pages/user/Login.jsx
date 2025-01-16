@@ -1,8 +1,10 @@
 import { login } from "../../api/api";
+import { useGlobal } from "../../context/globalHook";
 import FormCommon from "../../reusable/components/basic3/FormCommon";
 import { dummyUrl } from "../../reusable/hooks/useHook1";
 
 export default function Login() {
+  const { userSet } = useGlobal();
   return (
     <FormCommon
       title={"Login"}
@@ -24,7 +26,7 @@ export default function Login() {
           isRequired: `passwordConfirm is required`,
         },
       ]}
-      login={login}
+      loginObj={{ login, userSet }}
     ></FormCommon>
   );
 }

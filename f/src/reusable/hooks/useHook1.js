@@ -5,11 +5,23 @@ import dayjs from "dayjs";
 
 import { fSocket, get } from "../../api/api";
 import { schemaResult } from "../../lib/joiValidator";
+import { useGlobal } from "../../context/globalHook";
 
-const { data: urlData } = await get("/systemUrl/getException");
+async function fetchData() {
+  try {
+    const response = await fetch(
+      "http://localhost:8000/systemUrl/getException",
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+const urlData = await fetchData();
 
 const events = urlData?.events && urlData?.events;
-export const urlEvents = urlData?.urlEvents && urlData.urlEvents;
+export const urlEvents = urlData?.urlEvents?.length > 0 && urlData.urlEvents;
 
 export const dummyUrl = "/dummy/duh";
 export const registryUserGetAll = colonRemove(urlEvents[1]);
@@ -36,6 +48,8 @@ export function f2bFormat(url) {
 }
 
 export function useFetch(url, edit = true, form = false) {
+  const { user } = useGlobal();
+
   //params check
   const schema = Joi.object({
     url: Joi.string().required(),
@@ -47,7 +61,7 @@ export function useFetch(url, edit = true, form = false) {
   const { data, refetch, isFetching } = useQuery({
     queryKey: [f2b],
     queryFn: async () => {
-      return edit && get(url);
+      return edit && get(url, user);
     },
   });
 
@@ -78,6 +92,7 @@ export function useFetch(url, edit = true, form = false) {
 }
 
 export function usePreFetch(arr) {
+  const { user } = useGlobal();
   //params check
   const schema = Joi.object({
     arr: Joi.array().items(Joi.string()).required(),
@@ -87,25 +102,27 @@ export function usePreFetch(arr) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    arr.forEach((url) => {
-      const f2b = f2bFormat(url);
-      queryClient.prefetchQuery({
-        queryKey: [f2b],
-        queryFn: async () => {
-          return get(url);
-        },
+    if (user !== "Guest") {
+      arr.forEach((url) => {
+        const f2b = f2bFormat(url);
+        queryClient.prefetchQuery({
+          queryKey: [f2b],
+          queryFn: async () => {
+            return get(url, user);
+          },
+        });
       });
-    });
-  }, [queryClient, arr]);
+    }
+  }, [queryClient, arr, user]);
 }
 
 export function useMutate() {
-  const { isPending, mutate, data } = useMutation({
+  const { isPending, mutate } = useMutation({
     mutationFn: async (method) => {
       method;
     },
   });
-  return { isPending, mutate, data };
+  return { isPending, mutate };
 }
 
 export function useLocalStorage(key, initialValue) {

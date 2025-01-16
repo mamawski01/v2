@@ -1,5 +1,6 @@
-import { Outlet, ScrollRestoration } from "react-router-dom";
+import { Outlet, ScrollRestoration, useNavigate } from "react-router-dom";
 import {
+  PowerIcon,
   UserGroupIcon,
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/solid";
@@ -15,12 +16,26 @@ import Logo from "../reusable/components/basic1/Logo";
 import H1SmallText from "../reusable/components/basic0/H1SmallText";
 import Option from "../reusable/components/basic1/Option";
 import BtnNavLink from "../reusable/components/basic0/BtnNavLink";
+import { useGlobal } from "../context/globalHook";
+import Btn from "../reusable/components/basic0/Btn";
+import { logout } from "../api/api";
 
 export default function AppLayout() {
+  const navigate = useNavigate();
+  const { userSet, user } = useGlobal();
   return (
     <div className="no-scrollbar relative mx-auto flex min-h-screen w-full flex-col overflow-y-scroll 2xl:w-5/6">
       <MainHeader>
         <Logo></Logo>
+        <div>
+          <Btn onClick={() => logout(navigate, userSet, user)}>
+            <Icon>
+              <PowerIcon></PowerIcon>
+              <H1mdAndUp>{user === "Guest" ? "Login" : user}</H1mdAndUp>
+              <H1smOnly>{user === "Guest" ? "Login" : user}</H1smOnly>
+            </Icon>
+          </Btn>
+        </div>
       </MainHeader>
       <MainSection>
         <MainSideBar>

@@ -39,7 +39,7 @@ export default function FormCommon({
   edit = false,
   fields = [],
   devBtn,
-  login,
+  loginObj,
 }) {
   const navigate = useNavigate();
 
@@ -85,11 +85,12 @@ export default function FormCommon({
     }, {});
 
     console.log(formData);
-    login
-      ? login(
+    loginObj
+      ? loginObj.login(
           confirmedUserLoginFile,
           await new OnSubmitForm(formData).file(),
           navigate,
+          loginObj.userSet,
         )
       : mutate(
           edit
@@ -192,7 +193,7 @@ FormCommon.propTypes = {
   fields: PropTypes.array,
   getOne: PropTypes.string,
   id: PropTypes.string,
-  login: PropTypes.func,
+  loginObj: PropTypes.object,
   onDelete: PropTypes.func,
   patchFile: PropTypes.string,
   postFile: PropTypes.string,

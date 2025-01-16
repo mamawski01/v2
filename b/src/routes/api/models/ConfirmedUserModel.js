@@ -1,6 +1,7 @@
 "use strict";
 
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 import { CommonModel } from "./common/commonModel.js";
 
@@ -12,6 +13,7 @@ const schema = new Schema({
   dataId: {
     type: String,
     unique: [true, "dataId already exist!"],
+    default: () => uuidv4({ namespace: collectionName }),
   },
   username: {
     type: String,
@@ -24,12 +26,6 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "WeeklyUserSchedule",
   },
-  timelog: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "UserTimelog",
-    },
-  ],
 });
 
 const ConfirmedUserModel =
