@@ -64,8 +64,10 @@ export default function ManageUsers() {
                   <div className="mb-1 flex w-full flex-col justify-evenly">
                     <div className="flex justify-center">
                       <div>
-                        <BtnEditLink to={`manageUserForm/${data._id}`}>
-                          Authenticate User
+                        <BtnEditLink
+                          to={`/homepage/confirmUserList/confirmedUserForm/${data._id}`}
+                        >
+                          Edit User
                         </BtnEditLink>
                       </div>
                     </div>

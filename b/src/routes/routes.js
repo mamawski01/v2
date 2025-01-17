@@ -13,6 +13,7 @@ import {
   patchPasswordFile,
   postFile,
   postOne,
+  removeFanDData,
   transferOne,
 } from "./api/bApi.js";
 import { upload } from "../utils/multer.js";
@@ -69,9 +70,15 @@ export const urlArr = [
     fileName: "userImg",
   },
   {
-    url: "/confirmedUser/removeFile/:id",
+    url: "/confirmedUser/removeFanDData/:id",
     model: ConfirmedUserModel,
     folderName: "userImgFol",
+    modelToBeRemoveObj: [
+      {
+        model: WeeklyUserScheduleModel,
+        entry: "weeklySchedule",
+      },
+    ],
   },
   {
     url: "/confirmedUser/loginFile",
@@ -132,6 +139,17 @@ urlArr.forEach((item) => {
   if (item.url.includes("removeFile")) {
     routes.delete(item.url, verifyToken, (rq, rs) => {
       deleteFile(rq, rs, item.model, item.folderName);
+    });
+  }
+  if (item.url.includes("removeFanDData")) {
+    routes.delete(item.url, verifyToken, (rq, rs) => {
+      removeFanDData(
+        rq,
+        rs,
+        item.model,
+        item.folderName,
+        item.modelToBeRemoveObj
+      );
     });
   }
   if (item.url.includes("transferOne")) {

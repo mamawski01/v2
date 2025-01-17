@@ -26,6 +26,10 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "WeeklyUserSchedule",
   },
+  roleSelect: {
+    type: String,
+    default: "user",
+  },
 });
 
 const ConfirmedUserModel =

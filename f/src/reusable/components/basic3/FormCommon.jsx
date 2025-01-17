@@ -107,9 +107,10 @@ export default function FormCommon({
         onSubmit={handleSubmit(onSubmit, onError)}
         isPending={isPending}
         superReset={superReset}
-        onDelete={onDelete ? () => onDelete(id) : null}
+        onDelete={onDelete ? () => onDelete(mutate, id) : null}
         edit={edit}
         formName={edit ? `${data.data.firstName} ${data.data.lastName}` : ""}
+        loginObj={loginObj}
       >
         <Row>
           {fields.slice().map((item, i) => (

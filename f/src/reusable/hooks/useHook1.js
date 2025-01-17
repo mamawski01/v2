@@ -102,7 +102,7 @@ export function usePreFetch(arr) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (user !== "Guest") {
+    if (user.token !== undefined) {
       arr.forEach((url) => {
         const f2b = f2bFormat(url);
         queryClient.prefetchQuery({

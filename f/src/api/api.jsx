@@ -33,7 +33,7 @@ class DataHandler {
 
 export async function get(url, user) {
   try {
-    if (user !== "Guest") {
+    if (user.token !== undefined) {
       authenticate(user);
       const data = await apiClient.get(url);
       f2bFx(url, data);
@@ -80,7 +80,7 @@ export async function remove(url) {
 function authenticate(user) {
   apiClient.interceptors.request.use(
     (config) => {
-      const dataDetails = localStorage.getItem(user);
+      const dataDetails = localStorage.getItem(user.username);
       if (dataDetails) {
         const token = JSON.parse(dataDetails).token;
         config.headers.Authorization = `Bearer ${token}`;
@@ -96,9 +96,9 @@ export async function login(url, data, navigate, userSet) {
     const rs = await apiClient.post(url, data);
     toast.custom(<ToastSuccess>Logged In successfully</ToastSuccess>);
     const { dataDetails } = rs.data;
-    userSet(dataDetails.username);
+    userSet({ username: dataDetails.username, token: dataDetails.token });
     localStorage.setItem(dataDetails.username, JSON.stringify(dataDetails));
-    navigate("/Homepage");
+    navigate("/homepage");
     return rs;
   } catch (exception) {
     return DataHandler.ifError(exception);
@@ -106,13 +106,13 @@ export async function login(url, data, navigate, userSet) {
 }
 
 export async function logout(navigate, userSet, user) {
-  console.log(user);
+  console.log(user.username);
   try {
-    localStorage.removeItem(user);
-    user !== "Guest" &&
+    localStorage.removeItem(user.username);
+    user.token !== undefined &&
       toast.custom(<ToastSuccess>Logged Out successfully</ToastSuccess>);
     navigate("/homepage/login");
-    userSet("Guest");
+    userSet({ username: "Guest", token: undefined });
   } catch (exception) {
     return DataHandler.ifError(exception);
   }

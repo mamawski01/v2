@@ -4,7 +4,11 @@ import { urlEvents, useLocalStorage } from "../reusable/hooks/useHook1";
 import Loading from "../reusable/components/basic1/Loading";
 
 export default function GlobalProvider({ children }) {
-  const [user, userSet] = useLocalStorage("user", "Guest");
+  const [user, userSet] = useLocalStorage("user", {
+    username: "Guest",
+    token: undefined,
+  });
+
   if (urlEvents.length === 0) return <Loading></Loading>;
   if (urlEvents) {
     return (

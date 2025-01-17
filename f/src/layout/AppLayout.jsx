@@ -31,8 +31,10 @@ export default function AppLayout() {
           <Btn onClick={() => logout(navigate, userSet, user)}>
             <Icon>
               <PowerIcon></PowerIcon>
-              <H1mdAndUp>{user === "Guest" ? "Login" : user}</H1mdAndUp>
-              <H1smOnly>{user === "Guest" ? "Login" : user}</H1smOnly>
+              <H1mdAndUp>
+                {user === "Guest" ? "Login" : user.username}
+              </H1mdAndUp>
+              <H1smOnly>{user === "Guest" ? "Login" : user.username}</H1smOnly>
             </Icon>
           </Btn>
         </div>

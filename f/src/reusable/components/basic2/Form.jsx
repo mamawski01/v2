@@ -7,6 +7,10 @@ import BtnEdit from "./BtnEdit";
 import BtnSave from "./BtnSave";
 import BtnClear from "./BtnClear";
 import BtnDelete from "./BtnDelete";
+import Btn from "../basic0/Btn";
+import Icon from "../basic0/Icon";
+import { PowerIcon } from "@heroicons/react/24/solid";
+import { HoverColor } from "./btnHelper";
 
 export default function Form({
   children = "Form",
@@ -16,17 +20,20 @@ export default function Form({
   edit = false,
   onDelete,
   formName = "Form Name",
+  loginObj,
 }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   return (
     <ContentBox1>
-      <div className="flex w-full justify-end">
-        <div>
-          <BtnGoBack></BtnGoBack>
+      {!loginObj && (
+        <div className="flex w-full justify-end">
+          <div>
+            <BtnGoBack></BtnGoBack>
+          </div>
         </div>
-      </div>
+      )}
       <form
         autoComplete="off"
         onSubmit={onSubmit}
@@ -42,7 +49,20 @@ export default function Form({
             </div>
           ) : (
             <div>
-              <BtnSave isPending={isPending}>Save</BtnSave>
+              {loginObj ? (
+                <Btn
+                  type="submit"
+                  isPending={isPending}
+                  hoverColor={HoverColor.save()}
+                >
+                  <Icon>
+                    <PowerIcon></PowerIcon>
+                  </Icon>
+                  Login
+                </Btn>
+              ) : (
+                <BtnSave isPending={isPending}>Save</BtnSave>
+              )}
             </div>
           )}
           <div>
@@ -55,9 +75,11 @@ export default function Form({
               <BtnDelete onClick={onDelete}>Delete</BtnDelete>
             </div>
           )}
-          <div>
-            <BtnGoBack></BtnGoBack>
-          </div>
+          {!loginObj && (
+            <div>
+              <BtnGoBack></BtnGoBack>
+            </div>
+          )}
         </div>
       </form>
     </ContentBox1>
@@ -69,6 +91,7 @@ Form.propTypes = {
   edit: PropTypes.bool,
   formName: PropTypes.string,
   isPending: PropTypes.bool,
+  loginObj: PropTypes.object,
   onDelete: PropTypes.func,
   onSubmit: PropTypes.func,
   superReset: PropTypes.func,

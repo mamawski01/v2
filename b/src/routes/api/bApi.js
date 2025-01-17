@@ -38,7 +38,7 @@ class DataHandler {
   }
   static authenticate(rs, data) {
     const token = jwt.sign(
-      { objId: data._id, username: data.username },
+      { objId: data._id, username: data.username, role: data.roleSelect },
       process.env.TOKEN_KEY,
       {
         expiresIn: "4h",
@@ -76,6 +76,19 @@ class DataHandler {
       dataId,
     });
     if (dataIdExist) return DataHandler.duplicatedEntry(rq, rs, dataId);
+  }
+  static secure(rq, rs, username, password, confirmPassword) {
+    if (!username || !password) {
+      return DataHandler.ifError(rq, rs, "Username and password are required");
+    }
+
+    if (password !== confirmPassword) {
+      return DataHandler.ifError(
+        rq,
+        rs,
+        "Password and confirmPassword does not match"
+      );
+    }
   }
 }
 
@@ -152,18 +165,13 @@ export async function patchPasswordFile(rq, rs, model, folderName) {
   try {
     const { id } = rq.params;
     const { username, password, confirmPassword } = rq.body;
-    console.log(confirmPassword);
 
     if (!username || !password) {
-      return DataHandler.ifError(rq, rs, "Username and password are required");
+      return DataHandler.secure(rq, rs, username, password, confirmPassword);
     }
 
     if (password !== confirmPassword) {
-      return DataHandler.ifError(
-        rq,
-        rs,
-        "Password and confirmPassword does not match"
-      );
+      return DataHandler.secure(rq, rs, username, password, confirmPassword);
     }
 
     //userPrevFile with rq.file?.filename
@@ -194,6 +202,31 @@ export async function deleteFile(rq, rs, model, folderName) {
     DataHandler.delPrevFile(folderName, user.file);
     //userPrevFile
     const data = await model.findByIdAndDelete(id);
+    return DataHandler.isFound(rs, data);
+  } catch (error) {
+    return DataHandler.ifError(rq, rs, error);
+  }
+}
+
+export async function removeFanDData(
+  rq,
+  rs,
+  model,
+  folderName,
+  modelToBeRemoveObj
+) {
+  try {
+    const { id } = rq.params;
+    //userPrevFile
+    const user = await model.findById(id);
+    if (!user) return DataHandler.dataNotFound(rq, rs);
+    DataHandler.delPrevFile(folderName, user.file);
+    //userPrevFile
+    const data = await model.findByIdAndDelete(id);
+
+    modelToBeRemoveObj.forEach(async (obj) => {
+      await obj.model.findByIdAndDelete(user[obj.entry]);
+    });
     return DataHandler.isFound(rs, data);
   } catch (error) {
     return DataHandler.ifError(rq, rs, error);
@@ -234,12 +267,20 @@ export async function transferOne(
 
 export async function loginFile(rq, rs, model) {
   try {
-    const { username, password } = rq.body;
+    const { username, password, confirmPassword } = rq.body;
 
     const data = await model.findOne({ username });
 
     if (data && (await bcrypt.compare(password, data.password))) {
       return DataHandler.authenticate(rs, data);
+    }
+
+    if (!username || !password) {
+      return DataHandler.secure(rq, rs, username, password, confirmPassword);
+    }
+
+    if (password !== confirmPassword) {
+      return DataHandler.secure(rq, rs, username, password, confirmPassword);
     }
 
     return rs.status(400).send("Invalid credentials. Please try again.");
