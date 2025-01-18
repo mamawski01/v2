@@ -23,24 +23,27 @@ function f2bFx(url, data) {
 
 class DataHandler {
   constructor() {}
-  static ifError(exception, mess) {
-    console.log(exception, mess);
+  static ifError(exception, navigate) {
     console.log(exception.response.data);
     toast.custom(<ToastError>{exception.response.data}</ToastError>);
+    if (exception.response.data.includes("Token")) {
+      navigate("/homepage/login");
+    }
     return exception.response.data;
   }
 }
 
-export async function get(url, user) {
+export async function get(url, user, navigate) {
   try {
     if (user.token !== undefined) {
       authenticate(user);
       const data = await apiClient.get(url);
+
       f2bFx(url, data);
       return data;
     }
   } catch (exception) {
-    return DataHandler.ifError(exception);
+    return DataHandler.ifError(exception, navigate);
   }
 }
 

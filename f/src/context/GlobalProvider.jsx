@@ -8,8 +8,10 @@ export default function GlobalProvider({ children }) {
     username: "Guest",
     token: undefined,
   });
+  console.log(user);
 
   if (urlEvents.length === 0) return <Loading></Loading>;
+
   if (urlEvents) {
     return (
       <GlobalContext.Provider value={{ urlEvents, user, userSet }}>

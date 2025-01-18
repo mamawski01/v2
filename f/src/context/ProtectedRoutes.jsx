@@ -8,11 +8,11 @@ export default function ProtectedRoutes({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user.username === undefined) {
+    if (user.token === undefined) {
       navigate("/homepage/login", { replace: true });
     }
   }, [navigate, user]);
-  return children;
+  if (user.token !== undefined) return children;
 }
 
 ProtectedRoutes.propTypes = {

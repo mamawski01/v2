@@ -21,7 +21,11 @@ import ProtectedRoutes from "./context/ProtectedRoutes";
 
 const routes = [
   {
-    element: <AppLayout />,
+    element: (
+      <ProtectedRoutes>
+        <AppLayout />
+      </ProtectedRoutes>
+    ),
     errorElement: <Error />,
     children: [
       {
@@ -31,68 +35,36 @@ const routes = [
 
       {
         path: "homepage",
-        element: (
-          <ProtectedRoutes>
-            <Homepage />
-          </ProtectedRoutes>
-        ),
+        element: <Homepage />,
       },
       {
         path: "homepage/registryUserList",
-        element: (
-          <ProtectedRoutes>
-            <RegistryUserList />
-          </ProtectedRoutes>
-        ),
+        element: <RegistryUserList />,
       },
       {
         path: "homepage/registryUserList/registryUserForm",
-        element: (
-          <ProtectedRoutes>
-            <RegistryUserForm />
-          </ProtectedRoutes>
-        ),
+        element: <RegistryUserForm />,
       },
       {
         path: "homepage/registryUserList/registryUserForm/:id",
-        element: (
-          <ProtectedRoutes>
-            <RegistryUserForm />
-          </ProtectedRoutes>
-        ),
+        element: <RegistryUserForm />,
       },
 
       {
         path: "homepage/confirmUserList",
-        element: (
-          <ProtectedRoutes>
-            <ConfirmedUserList />
-          </ProtectedRoutes>
-        ),
+        element: <ConfirmedUserList />,
       },
       {
         path: "homepage/confirmUserList/confirmedUserForm/",
-        element: (
-          <ProtectedRoutes>
-            <ConfirmedUserForm />
-          </ProtectedRoutes>
-        ),
+        element: <ConfirmedUserForm />,
       },
       {
         path: "homepage/confirmUserList/confirmedUserForm/:id",
-        element: (
-          <ProtectedRoutes>
-            <ConfirmedUserForm />
-          </ProtectedRoutes>
-        ),
+        element: <ConfirmedUserForm />,
       },
       {
         path: "homepage/manageUsers",
-        element: (
-          <ProtectedRoutes>
-            <ManageUsers />
-          </ProtectedRoutes>
-        ),
+        element: <ManageUsers />,
       },
     ],
   },

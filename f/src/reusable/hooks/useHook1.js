@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Joi from "joi";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 import { fSocket, get } from "../../api/api";
 import { schemaResult } from "../../lib/joiValidator";
@@ -49,6 +50,7 @@ export function f2bFormat(url) {
 
 export function useFetch(url, edit = true, form = false) {
   const { user } = useGlobal();
+  const navigate = useNavigate();
 
   //params check
   const schema = Joi.object({
@@ -61,10 +63,9 @@ export function useFetch(url, edit = true, form = false) {
   const { data, refetch, isFetching } = useQuery({
     queryKey: [f2b],
     queryFn: async () => {
-      return edit && get(url, user);
+      return edit && user.token !== undefined && get(url, user, navigate);
     },
   });
-
   const [apiData, apiDataSet] = useState();
   //last happening consuming data from BE
   if (!form) {
@@ -85,6 +86,7 @@ export function useFetch(url, edit = true, form = false) {
       arr.length > 7 && console.log("Must less than 7. Just check here.");
     }
   }
+
   useEffect(() => {
     refetch();
   }, [refetch, apiData]);
@@ -93,6 +95,7 @@ export function useFetch(url, edit = true, form = false) {
 
 export function usePreFetch(arr) {
   const { user } = useGlobal();
+  const navigate = useNavigate();
   //params check
   const schema = Joi.object({
     arr: Joi.array().items(Joi.string()).required(),
@@ -108,12 +111,12 @@ export function usePreFetch(arr) {
         queryClient.prefetchQuery({
           queryKey: [f2b],
           queryFn: async () => {
-            return get(url, user);
+            return get(url, user, navigate);
           },
         });
       });
     }
-  }, [queryClient, arr, user]);
+  }, [queryClient, arr, user, navigate]);
 }
 
 export function useMutate() {

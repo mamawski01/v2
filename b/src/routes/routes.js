@@ -20,6 +20,11 @@ import { upload } from "../utils/multer.js";
 import RegistryUserModel from "./api/models/RegistryUserModel.js";
 import ConfirmedUserModel from "./api/models/ConfirmedUserModel.js";
 import WeeklyUserScheduleModel from "./api/models/WeeklyUserScheduleModel.js";
+import {
+  abilities,
+  eventsFormatter,
+  rolePermissions,
+} from "./rolePermission.js";
 
 export const routes = express.Router();
 
@@ -90,12 +95,7 @@ export const urlArr = [
 export const urlEvents = urlArr.map((item) => item.url);
 
 //for socket io
-export const events = urlEvents.map((url) => {
-  const firstWord = url.split("/")[1];
-  const secondWord =
-    url.split("/")[2].charAt(0).toUpperCase() + url.split("/")[2].slice(1);
-  return firstWord + secondWord;
-});
+export const events = eventsFormatter(urlEvents);
 
 urlArr.forEach((item) => {
   if (item.url.includes("getException")) {
@@ -190,8 +190,31 @@ function verifyToken(rq, rs, nxt) {
     const decoded = jwt.verify(token, process.env.TOKEN_KEY);
 
     rq.dataToken = decoded;
+    rq.role = decoded.role;
+
+    const url = eventsFormatter([rq.url])[0];
+    const loggedUserId = rq.url.split("/").pop();
+    // console.log(loggedUserId);
+    const documentId = decoded.objId;
+    // console.log(documentId);
+
+    console.log(rq.role);
+    // const allowedUrls = rolePermissions[rq.role];
+
+    const ability = abilities[rq.role];
+    console.log(url);
+
+    // if (allowedUrls.includes("*") || allowedUrls.includes(url)) {
+    //   return nxt();
+    // } else {
+    //   return rs.status(403).send("Forbidden");
+    // }
+    if (ability.can("read", url, "owner")) {
+      return nxt();
+    } else {
+      return rs.status(403).send("Forbidden");
+    }
   } catch (error) {
     return rs.status(401).send("Invalid Token, " + error);
   }
-  return nxt();
 }
