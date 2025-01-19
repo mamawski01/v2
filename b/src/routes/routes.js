@@ -21,9 +21,10 @@ import RegistryUserModel from "./api/models/RegistryUserModel.js";
 import ConfirmedUserModel from "./api/models/ConfirmedUserModel.js";
 import WeeklyUserScheduleModel from "./api/models/WeeklyUserScheduleModel.js";
 import {
-  abilities,
+  getAbilities,
+  camelCaseToSingleWord,
   eventsFormatter,
-  rolePermissions,
+  defineAbility,
 } from "./rolePermission.js";
 
 export const routes = express.Router();
@@ -192,24 +193,26 @@ function verifyToken(rq, rs, nxt) {
     rq.dataToken = decoded;
     rq.role = decoded.role;
 
-    const url = eventsFormatter([rq.url])[0];
-    const loggedUserId = rq.url.split("/").pop();
-    // console.log(loggedUserId);
-    const documentId = decoded.objId;
-    // console.log(documentId);
+    const url = camelCaseToSingleWord(eventsFormatter([rq.url])[0]);
 
-    console.log(rq.role);
-    // const allowedUrls = rolePermissions[rq.role];
-
-    const ability = abilities[rq.role];
     console.log(url);
 
-    // if (allowedUrls.includes("*") || allowedUrls.includes(url)) {
-    //   return nxt();
-    // } else {
-    //   return rs.status(403).send("Forbidden");
-    // }
-    if (ability.can("read", url, "owner")) {
+    const owner = { id: rq.dataToken.objId, role: rq.role };
+
+    console.log(owner);
+
+    const ability = defineAbility(owner);
+    const dataId = rq.url.split("/").pop();
+
+    class confirmedUser {
+      constructor(ownerId) {
+        this.ownerId = ownerId;
+      }
+    }
+
+    const someData = new confirmedUser(dataId);
+
+    if (ability.can(methodToAction[rq.method], url)) {
       return nxt();
     } else {
       return rs.status(403).send("Forbidden");
@@ -218,3 +221,10 @@ function verifyToken(rq, rs, nxt) {
     return rs.status(401).send("Invalid Token, " + error);
   }
 }
+
+const methodToAction = {
+  GET: "read",
+  POST: "create",
+  PATCH: "update",
+  DELETE: "delete",
+};

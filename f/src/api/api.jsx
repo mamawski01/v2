@@ -28,6 +28,7 @@ class DataHandler {
     toast.custom(<ToastError>{exception.response.data}</ToastError>);
     if (exception.response.data.includes("Token")) {
       navigate("/homepage/login");
+      localStorage.clear();
     }
     return exception.response.data;
   }
@@ -109,9 +110,9 @@ export async function login(url, data, navigate, userSet) {
 }
 
 export async function logout(navigate, userSet, user) {
-  console.log(user.username);
   try {
-    localStorage.removeItem(user.username);
+    // localStorage.removeItem(user.username);
+    localStorage.clear();
     user.token !== undefined &&
       toast.custom(<ToastSuccess>Logged Out successfully</ToastSuccess>);
     navigate("/homepage/login");
