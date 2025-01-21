@@ -5,8 +5,10 @@ import {
   confirmedUserPatchFile,
 } from "../../reusable/hooks/useHook1";
 import {
+  clearUser,
   onDeleteConfirmedUser,
   resetDev,
+  userDataType,
   userField,
 } from "./helpers/userHelper";
 
@@ -58,6 +60,8 @@ export default function ConfirmedUserForm() {
           isRequired: `passwordConfirm is required`,
         },
       ]}
+      clear={clearUser}
+      dataType={userDataType}
     ></FormCommon>
   );
 }

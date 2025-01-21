@@ -1,47 +1,36 @@
 import { AbilityBuilder, createMongoAbility } from "@casl/ability";
+import Joi from "joi";
+import { schemaResult } from "../utils/joiValidator.js";
 
-// Define the abilities for each role
-export function getAbilities(user) {
-  const roles = {
-    admin: createMongoAbility([
-      {
-        action: "manage",
-        subject: "all",
-      },
-    ]),
-    manager: createMongoAbility([
-      {
-        action: "manage",
-        subject: "registryUser",
-      },
-      {
-        action: "read",
-        subject: "confirmedUser",
-      },
-      {
-        action: "update",
-        subject: "confirmedUser",
-        conditions: { ownerId: user.id },
-      },
-      {
-        action: "delete",
-        subject: "confirmedUser",
-        conditions: { ownerId: user.id },
-      },
-    ]),
-    user: createMongoAbility([
-      {
-        action: "read",
-        subject: "registryUser",
-      },
-      {
-        action: "read",
-        subject: "confirmedUser",
-      },
-    ]),
-  };
+export const defineAbility = ({ id, role, fileId }) => {
+  const { can, cannot, build } = new AbilityBuilder(createMongoAbility);
 
-  return roles[user.role];
+  if (role === "admin") can("manage", "all");
+
+  if (role === "manager") {
+    console.log("manager");
+    can("read", "all");
+    can("manage", "registryUser");
+    cannot("update", "confirmedUser");
+    if (sameId(id, fileId)) can("delete", "confirmedUser");
+    can("manage", "userSchedule");
+  }
+
+  if (role === "user") {
+    can("read", "all");
+  }
+  return build();
+};
+
+function sameId(ownerId, fileId) {
+  const schema = Joi.object({
+    ownerId: Joi.string(),
+    fileId: Joi.string(),
+  }).validate({ ownerId, fileId });
+  schemaResult(schema);
+
+  if (ownerId === fileId) return true;
+  return false;
 }
 
 export function eventsFormatter(url) {
@@ -58,38 +47,3 @@ export function camelCaseToSingleWord(str) {
   let [first, second] = str.split(/(?=[A-Z])/);
   return `${first}${second}`;
 }
-
-export const defineAbility = (user) => {
-  const { can, build } = new AbilityBuilder(createMongoAbility);
-
-  if (user.role === "admin") can("manage", "all");
-
-  if (user.role === "manager") {
-    console.log("manager");
-    can("manage", "registryUser");
-    can("read", "confirmedUser");
-    can("update", "confirmedUser", {
-      ownerId: user.id,
-    });
-    can("delete", "confirmedUser", { ownerId: user.id });
-  }
-
-  if (user.role === "user") {
-    can("read", "confirmedUser");
-    can("read", "registryUser");
-  }
-  return build();
-};
-
-const owner = { id: 1, role: "manager" };
-const ability = defineAbility(owner);
-
-// class confirmedUser {
-//   constructor(ownerId) {
-//     this.ownerId = ownerId;
-//   }
-// }
-// const somePost = new confirmedUser(1);
-// console.log(somePost);
-
-console.log(ability.can("update", "registryUser"));

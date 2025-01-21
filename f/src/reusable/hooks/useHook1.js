@@ -24,6 +24,9 @@ const urlData = await fetchData();
 const events = urlData?.events && urlData?.events;
 export const urlEvents = urlData?.urlEvents?.length > 0 && urlData.urlEvents;
 
+// console.log(urlEvents);
+// console.log(events);
+
 export const dummyUrl = "/dummy/duh";
 export const registryUserGetAll = colonRemove(urlEvents[1]);
 export const registryUserGetOne = colonRemove(urlEvents[2]);
@@ -36,6 +39,14 @@ export const registryUserToConfirmedUserTransferOne = colonRemove(urlEvents[8]);
 export const confirmedUserPatchFile = colonRemove(urlEvents[9]);
 export const confirmedUserRemoveFile = colonRemove(urlEvents[10]);
 export const confirmedUserLoginFile = colonRemove(urlEvents[11]);
+export const weeklyScheduleGetOne = colonRemove(urlEvents[12]);
+export const weeklySchedulePatch = colonRemove(urlEvents[13]);
+export const confirmedUserGetOP = colonRemove(urlEvents[14]);
+export const userScheduleGetOne = colonRemove(urlEvents[15]);
+export const userScheduleGetGroup = colonRemove(urlEvents[16]);
+export const userSchedulePostUnique = colonRemove(urlEvents[17]);
+export const userSchedulePatchOne = colonRemove(urlEvents[18]);
+export const userScheduleRemoveOne = colonRemove(urlEvents[19]);
 
 function colonRemove(url) {
   return url.split(":")[0];

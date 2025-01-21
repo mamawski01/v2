@@ -12,15 +12,18 @@ const schema = new Schema({
   ...CommonModel.registryUser(),
   dataId: {
     type: String,
+    required: [true, "dataId is required."],
     unique: [true, "dataId already exist!"],
     default: () => uuidv4({ namespace: collectionName }),
   },
   username: {
     type: String,
     default: "dummyUsername",
+    required: [true, "username is required."],
   },
   password: {
     type: String,
+    required: [true, "password is required."],
   },
   weeklySchedule: {
     type: Schema.Types.ObjectId,
@@ -29,6 +32,7 @@ const schema = new Schema({
   roleSelect: {
     type: String,
     default: "user",
+    required: [true, "roleSelect is required."],
   },
 });
 

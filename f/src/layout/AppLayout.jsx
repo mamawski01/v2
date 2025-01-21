@@ -1,7 +1,9 @@
 import { Outlet, ScrollRestoration, useNavigate } from "react-router-dom";
 import {
+  AcademicCapIcon,
   PowerIcon,
   UserGroupIcon,
+  UserIcon,
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/solid";
 
@@ -19,6 +21,8 @@ import BtnNavLink from "../reusable/components/basic0/BtnNavLink";
 import { useGlobal } from "../context/globalHook";
 import Btn from "../reusable/components/basic0/Btn";
 import { logout } from "../api/api";
+import OptionAutoClose from "../reusable/components/basic1/OptionAutoClose";
+import Avatar from "../reusable/components/basic0/Avatar";
 
 export default function AppLayout() {
   const navigate = useNavigate();
@@ -27,17 +31,30 @@ export default function AppLayout() {
     <div className="no-scrollbar relative mx-auto flex min-h-screen w-full flex-col overflow-y-scroll 2xl:w-5/6">
       <MainHeader>
         <Logo></Logo>
-        <div>
+        <OptionAutoClose topRight={true}>
+          <Icon>
+            {user === "Guest" ? (
+              <UserIcon></UserIcon>
+            ) : (
+              <Avatar src={user.image}></Avatar>
+            )}
+            <div className="w-4"></div>
+            <H1mdAndUp>{user === "Guest" ? "Login" : user.username}</H1mdAndUp>
+            <H1smOnly>{user === "Guest" ? "Login" : user.username}</H1smOnly>
+          </Icon>
+          <div className="flex">
+            <Icon>
+              <AcademicCapIcon></AcademicCapIcon>
+              <p>{user.role}</p>
+            </Icon>
+          </div>
           <Btn onClick={() => logout(navigate, userSet, user)}>
             <Icon>
               <PowerIcon></PowerIcon>
-              <H1mdAndUp>
-                {user === "Guest" ? "Login" : user.username}
-              </H1mdAndUp>
-              <H1smOnly>{user === "Guest" ? "Login" : user.username}</H1smOnly>
+              <p>Logout</p>
             </Icon>
           </Btn>
-        </div>
+        </OptionAutoClose>
       </MainHeader>
       <MainSection>
         <MainSideBar>

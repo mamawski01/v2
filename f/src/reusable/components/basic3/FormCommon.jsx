@@ -9,8 +9,7 @@ import {
 } from "../../hooks/useHook1";
 import {
   onError,
-  OnSubmitForm,
-  resetDate,
+  onSubmitForm,
   setDate,
   setItem,
   trimStrings,
@@ -40,6 +39,9 @@ export default function FormCommon({
   fields = [],
   devBtn,
   loginObj,
+  formName = "",
+  clear,
+  dataType = "text",
 }) {
   const navigate = useNavigate();
 
@@ -48,7 +50,7 @@ export default function FormCommon({
   const { errors } = formState;
   const { mutate, isPending } = useMutate();
   function superReset() {
-    reset({ birthdate: resetDate() });
+    reset(clear);
   }
 
   const { data } = useFetch(getOne + id, edit, true);
@@ -88,14 +90,14 @@ export default function FormCommon({
     loginObj
       ? loginObj.login(
           confirmedUserLoginFile,
-          await new OnSubmitForm(formData).file(),
+          await onSubmitForm(formData, dataType),
           navigate,
           loginObj.userSet,
         )
       : mutate(
           edit
-            ? patch(patchFile + id, await new OnSubmitForm(formData).file())
-            : post(postFile, await new OnSubmitForm(formData).file()),
+            ? patch(patchFile + id, await onSubmitForm(formData, dataType))
+            : post(postFile, await onSubmitForm(formData, dataType)),
         );
   }
 
@@ -109,7 +111,13 @@ export default function FormCommon({
         superReset={superReset}
         onDelete={onDelete ? () => onDelete(mutate, id) : null}
         edit={edit}
-        formName={edit ? `${data.data.firstName} ${data.data.lastName}` : ""}
+        formName={
+          formName
+            ? formName
+            : edit
+              ? `${data.data.firstName} ${data.data.lastName}`
+              : ""
+        }
         loginObj={loginObj}
       >
         <Row>
@@ -189,9 +197,12 @@ export default function FormCommon({
 }
 
 FormCommon.propTypes = {
+  clear: PropTypes.object,
   devBtn: PropTypes.object,
   edit: PropTypes.bool,
   fields: PropTypes.array,
+  dataType: PropTypes.string,
+  formName: PropTypes.string,
   getOne: PropTypes.string,
   id: PropTypes.string,
   loginObj: PropTypes.object,

@@ -28,7 +28,7 @@ function fileNameFx(fileName = "") {
   return dayjs(Date.now()).format("YYYY-MM-DD-hh-mm-ssa-SSS") + fileName;
 }
 
-export const upload = (folName = "userImgFolder", fileName = "userImg") => {
+export const upload = (folName = "userImgFol", fileName = "userImg") => {
   const schema = Joi.object({
     fileName: Joi.string(),
     folName: Joi.string(),

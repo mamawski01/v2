@@ -31,27 +31,44 @@ export function trimStrings(obj) {
   return obj;
 }
 
-export class OnSubmitForm {
-  constructor(data) {
-    this.data = trimStrings(data);
-  }
-  async file() {
+// export class OnSubmitForm {
+//   constructor(data) {
+//     this.data = trimStrings(data);
+//   }
+//   async file() {
+//     const finalData = new FormData();
+//     for (const key in this.data) {
+//       if (typeof this.data[key] === "object") {
+//         finalData.append(key, this.data[key][0]);
+//       } else {
+//         finalData.append(key, this.data[key]);
+//       }
+//     }
+//     return finalData;
+//   }
+//   async text() {
+//     return this.data;
+//   }
+//   async timelogUp() {
+//     return convertToJson(this.data.file[0]);
+//   }
+// }
+
+export async function onSubmitForm(data, dataType) {
+  const trimmedData = trimStrings(data);
+
+  if (dataType === "file") {
     const finalData = new FormData();
-    for (const key in this.data) {
-      if (typeof this.data[key] === "object") {
-        finalData.append(key, this.data[key][0]);
+    for (const key in trimmedData) {
+      if (typeof trimmedData[key] === "object") {
+        finalData.append(key, trimmedData[key][0]);
       } else {
-        finalData.append(key, this.data[key]);
+        finalData.append(key, trimmedData[key]);
       }
     }
     return finalData;
   }
-  async text() {
-    return this.data;
-  }
-  async timelogUp() {
-    return convertToJson(this.data.file[0]);
-  }
+  if (dataType === "text") return trimmedData;
 }
 
 function convertToJson(file) {

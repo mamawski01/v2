@@ -60,6 +60,7 @@ export async function post(url, data) {
 }
 
 export async function patch(url, data) {
+  console.log(data);
   try {
     const rs = await apiClient.patch(url, data);
     f2bFx(url, rs);
@@ -100,7 +101,13 @@ export async function login(url, data, navigate, userSet) {
     const rs = await apiClient.post(url, data);
     toast.custom(<ToastSuccess>Logged In successfully</ToastSuccess>);
     const { dataDetails } = rs.data;
-    userSet({ username: dataDetails.username, token: dataDetails.token });
+    console.log(dataDetails);
+    userSet({
+      username: dataDetails.username,
+      token: dataDetails.token,
+      role: dataDetails.role,
+      image: dataDetails.image,
+    });
     localStorage.setItem(dataDetails.username, JSON.stringify(dataDetails));
     navigate("/homepage");
     return rs;

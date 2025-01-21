@@ -5,8 +5,10 @@ import {
   registryUserPostFile,
 } from "../../reusable/hooks/useHook1";
 import {
+  clearUser,
   onDeleteRegistryUser,
   resetDev,
+  userDataType,
   userField,
 } from "./helpers/userHelper";
 import FormCommon from "../../reusable/components/basic3/FormCommon";
@@ -25,6 +27,8 @@ export default function RegistryUserForm() {
       edit={edit}
       devBtn={resetDev}
       fields={userField(edit)}
+      clear={clearUser}
+      dataType={userDataType}
     ></FormCommon>
   );
 }

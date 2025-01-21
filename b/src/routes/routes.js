@@ -5,15 +5,20 @@ import jwt from "jsonwebtoken";
 import {
   deleteFile,
   getAll,
+  getGroup,
   getLocal,
   getOne,
+  getOP,
   getUrl,
   loginFile,
   patchFile,
+  patchOne,
   patchPasswordFile,
   postFile,
   postOne,
+  postUnique,
   removeFanDData,
+  removeOne,
   transferOne,
 } from "./api/bApi.js";
 import { upload } from "../utils/multer.js";
@@ -21,11 +26,11 @@ import RegistryUserModel from "./api/models/RegistryUserModel.js";
 import ConfirmedUserModel from "./api/models/ConfirmedUserModel.js";
 import WeeklyUserScheduleModel from "./api/models/WeeklyUserScheduleModel.js";
 import {
-  getAbilities,
   camelCaseToSingleWord,
   eventsFormatter,
   defineAbility,
 } from "./rolePermission.js";
+import UserScheduleModel from "./api/models/UserScheduleModel.js";
 
 export const routes = express.Router();
 
@@ -48,7 +53,7 @@ export const urlArr = [
     fileName: "userImg",
   },
   {
-    url: "/registryUser/removeFile/:id",
+    url: "/registryUser/deleteFile/:id",
     model: RegistryUserModel,
     folderName: "userImgFol",
   },
@@ -85,10 +90,47 @@ export const urlArr = [
         entry: "weeklySchedule",
       },
     ],
+    modelDataToBeRemoveObj: [UserScheduleModel],
   },
   {
     url: "/confirmedUser/loginFile",
     model: ConfirmedUserModel,
+  },
+  //weeklySchedule
+  {
+    url: "/weeklySchedule/getOne/:id",
+    model: WeeklyUserScheduleModel,
+  },
+  {
+    url: "/weeklySchedule/patchOne/:id",
+    model: WeeklyUserScheduleModel,
+  },
+  //confirmUser
+  {
+    url: "/confirmedUser/getOP/:id",
+    model: ConfirmedUserModel,
+    populate: ["weeklySchedule"],
+  },
+  //userSchedule
+  {
+    url: "/userSchedule/getOne/:id",
+    model: UserScheduleModel,
+  },
+  {
+    url: "/userSchedule/getGroup/:id",
+    model: UserScheduleModel,
+  },
+  {
+    url: "/userSchedule/postUnique",
+    model: UserScheduleModel,
+  },
+  {
+    url: "/userSchedule/patchOne/:id",
+    model: UserScheduleModel,
+  },
+  {
+    url: "/userSchedule/removeOne/:id",
+    model: UserScheduleModel,
   },
 ];
 
@@ -109,8 +151,14 @@ urlArr.forEach((item) => {
     routes.get(item.url, verifyToken, (rq, rs) => getAll(rq, rs, item.model));
   }
   if (item.url.includes("getOne")) {
+    routes.get(item.url, verifyToken, (rq, rs) => getOne(rq, rs, item.model));
+  }
+  if (item.url.includes("getGroup")) {
+    routes.get(item.url, verifyToken, (rq, rs) => getGroup(rq, rs, item.model));
+  }
+  if (item.url.includes("getOP")) {
     routes.get(item.url, verifyToken, (rq, rs) =>
-      getOne(rq, rs, item.model, item.populate)
+      getOP(rq, rs, item.model, item.populate)
     );
   }
   if (item.url.includes("postFile")) {
@@ -120,6 +168,16 @@ urlArr.forEach((item) => {
       upload(item.folderName, item.fileName).single("file"),
       (rq, rs) => postFile(rq, rs, item.model, item.folderName)
     );
+  }
+  if (item.url.includes("postOne")) {
+    routes.post(item.url, verifyToken, (rq, rs) => {
+      postOne(rq, rs, item.model);
+    });
+  }
+  if (item.url.includes("postUnique")) {
+    routes.post(item.url, verifyToken, (rq, rs) => {
+      postUnique(rq, rs, item.model);
+    });
   }
   if (item.url.includes("patchFile")) {
     routes.patch(
@@ -137,7 +195,12 @@ urlArr.forEach((item) => {
       (rq, rs) => patchPasswordFile(rq, rs, item.model, item.folderName)
     );
   }
-  if (item.url.includes("removeFile")) {
+  if (item.url.includes("removeOne")) {
+    routes.delete(item.url, verifyToken, (rq, rs) => {
+      removeOne(rq, rs, item.model);
+    });
+  }
+  if (item.url.includes("deleteFile")) {
     routes.delete(item.url, verifyToken, (rq, rs) => {
       deleteFile(rq, rs, item.model, item.folderName);
     });
@@ -149,7 +212,8 @@ urlArr.forEach((item) => {
         rs,
         item.model,
         item.folderName,
-        item.modelToBeRemoveObj
+        item.modelToBeRemoveObj,
+        item.modelDataToBeRemoveObj
       );
     });
   }
@@ -173,9 +237,10 @@ urlArr.forEach((item) => {
       }
     );
   }
-  if (item.url.includes("postOne")) {
-    routes.post(item.url, verifyToken, (rq, rs) => {
-      postOne(rq, rs, item.model);
+
+  if (item.url.includes("patchOne")) {
+    routes.patch(item.url, verifyToken, (rq, rs) => {
+      patchOne(rq, rs, item.model);
     });
   }
 });
@@ -195,22 +260,15 @@ function verifyToken(rq, rs, nxt) {
 
     const url = camelCaseToSingleWord(eventsFormatter([rq.url])[0]);
 
-    console.log(url);
-
-    const owner = { id: rq.dataToken.objId, role: rq.role };
-
-    console.log(owner);
-
-    const ability = defineAbility(owner);
     const dataId = rq.url.split("/").pop();
 
-    class confirmedUser {
-      constructor(ownerId) {
-        this.ownerId = ownerId;
-      }
-    }
+    const owner = {
+      id: rq.dataToken.objId,
+      role: rq.role,
+      fileId: dataId,
+    };
 
-    const someData = new confirmedUser(dataId);
+    const ability = defineAbility(owner);
 
     if (ability.can(methodToAction[rq.method], url)) {
       return nxt();

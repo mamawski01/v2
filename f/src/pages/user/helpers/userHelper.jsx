@@ -5,6 +5,7 @@ import {
   confirmedUserRemoveFile,
   registryUserRemoveFile,
 } from "../../../reusable/hooks/useHook1";
+import { resetDate } from "../../../reusable/components/basic2/FormHelper";
 
 export async function onDeleteRegistryUser(mutate, id) {
   const confirmDelete = await swalAlert("Yes, delete registry user.");
@@ -108,6 +109,10 @@ export function userField(edit) {
     },
   ];
 }
+
+export const userDataType = "file";
+
+export const clearUser = { birthdate: resetDate() };
 
 export const resetDev = {
   firstName: "John",

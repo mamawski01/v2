@@ -48,6 +48,8 @@ class DataHandler {
     return rs.status(201).json({
       dataDetails: {
         username: data.username,
+        role: data.roleSelect,
+        image: data.file,
         token,
       },
     });
@@ -122,7 +124,27 @@ export async function getAll(rq, rs, model) {
 export async function getOne(rq, rs, model) {
   try {
     const { id } = rq.params;
-    const data = await model.findById(id);
+    const data = await model.findById(id).populate("weeklySchedule");
+    return DataHandler.isFound(rs, data);
+  } catch (error) {
+    return DataHandler.ifError(rq, rs, error);
+  }
+}
+
+export async function getOP(rq, rs, model, populate) {
+  try {
+    const { id } = rq.params;
+    const data = await model.findById(id).populate(populate);
+    return DataHandler.isFound(rs, data);
+  } catch (error) {
+    return DataHandler.ifError(rq, rs, error);
+  }
+}
+
+export async function getGroup(rq, rs, model) {
+  try {
+    const { id } = rq.params;
+    const data = await model.find({ dataId: { $in: id } });
     return DataHandler.isFound(rs, data);
   } catch (error) {
     return DataHandler.ifError(rq, rs, error);
@@ -141,9 +163,43 @@ export async function postFile(rq, rs, model, folderName) {
   }
 }
 
+export async function postOne(rq, rs, model) {
+  try {
+    const data = await model.create(rq.body);
+    return DataHandler.isFound(rs, data);
+  } catch (error) {
+    return DataHandler.ifError(rq, rs, error);
+  }
+}
+
+export async function postUnique(rq, rs, model) {
+  try {
+    const prevData = await model.find();
+    const isArray = Array.isArray(rq.body);
+    const req = isArray ? rq.body : [rq.body];
+
+    const filteredDataOfNewAndPrev = req.filter(
+      (newItem) =>
+        !prevData.some((prevItem) => prevItem.uniqueData === newItem.uniqueData)
+    );
+    const filteredData = filteredDataOfNewAndPrev.reduce((acc, current) => {
+      if (!acc.find((item) => item.uniqueData === current.uniqueData)) {
+        acc.push(current);
+      }
+      return acc;
+    }, []);
+    const data = await model.insertMany(filteredData);
+
+    return DataHandler.isFound(rs, data);
+  } catch (error) {
+    return DataHandler.ifError(rq, rs, error);
+  }
+}
+
 export async function patchFile(rq, rs, model, folderName) {
   try {
-    const { id } = rq.body;
+    const { id } = rq.params;
+    console.log(id);
 
     //userPrevFile with rq.file?.filename
     const user = await model.findById(id);
@@ -193,6 +249,17 @@ export async function patchPasswordFile(rq, rs, model, folderName) {
   }
 }
 
+export async function removeOne(rq, rs, model) {
+  try {
+    const { id } = rq.params;
+
+    const data = await model.findByIdAndDelete(id);
+    return DataHandler.isFound(rs, data);
+  } catch (error) {
+    return DataHandler.ifError(rq, rs, error);
+  }
+}
+
 export async function deleteFile(rq, rs, model, folderName) {
   try {
     const { id } = rq.params;
@@ -213,7 +280,8 @@ export async function removeFanDData(
   rs,
   model,
   folderName,
-  modelToBeRemoveObj
+  modelToBeRemoveObj,
+  modelDataToBeRemoveObj = []
 ) {
   try {
     const { id } = rq.params;
@@ -223,9 +291,11 @@ export async function removeFanDData(
     DataHandler.delPrevFile(folderName, user.file);
     //userPrevFile
     const data = await model.findByIdAndDelete(id);
-
     modelToBeRemoveObj.forEach(async (obj) => {
       await obj.model.findByIdAndDelete(user[obj.entry]);
+    });
+    modelDataToBeRemoveObj.forEach(async (obj) => {
+      await obj.deleteMany({ dataId: data.dataId });
     });
     return DataHandler.isFound(rs, data);
   } catch (error) {
@@ -289,9 +359,14 @@ export async function loginFile(rq, rs, model) {
   }
 }
 
-export async function postOne(rq, rs, model) {
+export async function patchOne(rq, rs, model) {
   try {
-    const data = await model.create(rq.body);
+    const { id } = rq.params;
+
+    const data = await model.findByIdAndUpdate(id, rq.body, {
+      new: true,
+    });
+    console.log(data);
     return DataHandler.isFound(rs, data);
   } catch (error) {
     return DataHandler.ifError(rq, rs, error);

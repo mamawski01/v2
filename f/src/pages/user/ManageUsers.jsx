@@ -74,16 +74,17 @@ export default function ManageUsers() {
                     <div className="flex w-full justify-evenly">
                       <div>
                         <BtnLink
-                          to={`userDefaultSchedule/${data._id}/${data.userId}`}
+                          to={`userWeeklyScheduleForm/${data.weeklySchedule}`}
+                          state={data}
                         >
                           <Icon>
                             <CalendarIcon></CalendarIcon>
                           </Icon>
-                          User Weekly Schedule
+                          User Weekly Schedule Form
                         </BtnLink>
                       </div>
                       <div>
-                        <BtnLink to={`userSchedule/${data._id}/${data.userId}`}>
+                        <BtnLink to={`userSchedule/${data._id}/${data.dataId}`}>
                           <Icon>
                             <CalendarDaysIcon></CalendarDaysIcon>
                           </Icon>
