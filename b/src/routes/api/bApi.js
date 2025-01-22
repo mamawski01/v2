@@ -124,7 +124,7 @@ export async function getAll(rq, rs, model) {
 export async function getOne(rq, rs, model) {
   try {
     const { id } = rq.params;
-    const data = await model.findById(id).populate("weeklySchedule");
+    const data = await model.findById(id);
     return DataHandler.isFound(rs, data);
   } catch (error) {
     return DataHandler.ifError(rq, rs, error);
@@ -366,7 +366,6 @@ export async function patchOne(rq, rs, model) {
     const data = await model.findByIdAndUpdate(id, rq.body, {
       new: true,
     });
-    console.log(data);
     return DataHandler.isFound(rs, data);
   } catch (error) {
     return DataHandler.ifError(rq, rs, error);

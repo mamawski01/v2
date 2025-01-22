@@ -31,6 +31,7 @@ import {
   defineAbility,
 } from "./rolePermission.js";
 import UserScheduleModel from "./api/models/UserScheduleModel.js";
+import UserTimelogModel from "./api/models/UserTimelogModel.js";
 
 export const routes = express.Router();
 
@@ -131,6 +132,11 @@ export const urlArr = [
   {
     url: "/userSchedule/removeOne/:id",
     model: UserScheduleModel,
+  },
+  //userTimelog
+  {
+    url: "/userTimelog/getOne/:id",
+    model: UserTimelogModel,
   },
 ];
 

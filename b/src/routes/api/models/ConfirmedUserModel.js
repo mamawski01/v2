@@ -19,11 +19,9 @@ const schema = new Schema({
   username: {
     type: String,
     default: "dummyUsername",
-    required: [true, "username is required."],
   },
   password: {
     type: String,
-    required: [true, "password is required."],
   },
   weeklySchedule: {
     type: Schema.Types.ObjectId,
@@ -32,7 +30,6 @@ const schema = new Schema({
   roleSelect: {
     type: String,
     default: "user",
-    required: [true, "roleSelect is required."],
   },
 });
 

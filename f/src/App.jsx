@@ -21,6 +21,7 @@ import ProtectedRoutes from "./context/ProtectedRoutes";
 import UserWeeklyScheduleFormCustom from "./pages/userSchedule/UserWeeklyScheduleFormCustom";
 import UserSchedule from "./pages/userSchedule/userSchedule/UserSchedule";
 import UserScheduleProvider from "./pages/userSchedule/userSchedule/UserScheduleProvider";
+import UserTimeLogForm from "./pages/userSchedule/userSchedule/UserTimeLogForm";
 
 const routes = [
   {
@@ -73,6 +74,10 @@ const routes = [
       {
         path: "homepage/manageUsers/userWeeklyScheduleForm/:id",
         element: <UserWeeklyScheduleFormCustom />,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:dId/userTimeLogForm",
+        element: <UserTimeLogForm />,
       },
     ],
   },

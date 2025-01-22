@@ -24,7 +24,7 @@ import TbodyTr from "../../reusable/components/basic1/TbodyTr";
 import Td from "../../reusable/components/basic1/Td";
 import Selector from "../../reusable/components/basic0/Selector";
 import { patch } from "../../api/api";
-import { timeArr } from "../../lib/utils0";
+import { formatName, timeArr } from "../../lib/utils0";
 
 const daysOfWeek = [
   "monday",
@@ -123,7 +123,7 @@ export default function UserWeeklyScheduleFormCustom() {
           edit={edit}
           formName={
             edit &&
-            `${dataInfo.firstName} ${dataInfo.lastName}, userId: ${dataInfo.dataId}`
+            formatName(dataInfo.firstName, dataInfo.lastName, dataInfo.dataId)
           }
         >
           <Table>

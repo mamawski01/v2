@@ -7,15 +7,16 @@ import H1mdAndUp from "../../../reusable/components/basic0/H1mdAndUp";
 import Checkbox from "../../../reusable/components/basic0/Checkbox";
 import useUserSchedule from "./useUserSchedule";
 import BtnGoBack from "../../../reusable/components/basic2/BtnGoBack";
-import ContentBox1 from "../../../reusable/components/basic0/ContentBox1";
 import DateRangePicker from "../../../reusable/components/basic0/DateRangePicker";
 import { useGlobal } from "../../../context/globalHook";
 import Btn from "../../../reusable/components/basic0/Btn";
 import BtnLink from "../../../reusable/components/basic0/BtnLink";
-import { formatDate } from "../../../lib/utils0";
+import { formatDate, formatName } from "../../../lib/utils0";
+import CalendarBig from "../../../reusable/components/basic4/CalendarBig";
 
 export default function UserSchedule() {
   const {
+    user,
     showUS,
     showUSSet,
     showUF,
@@ -23,11 +24,23 @@ export default function UserSchedule() {
     scheduleListToSave,
     isPending,
     userSchedulePostAllUnique,
+    showUSch,
+    showUSchSet,
+    showUT,
+    showUTSet,
+    showUFT,
+    showUFTSet,
+    showS,
+    showSSet,
+    myEvents,
+    date,
+    dateSet,
+    components,
   } = useUserSchedule();
   const { value, valueSet } = useGlobal();
   return (
     <ContentBox0>
-      <ContentBox1>
+      <div className="pt-3">
         <OptionAutoClose>
           <Icon>
             <Squares2X2Icon></Squares2X2Icon>
@@ -39,8 +52,32 @@ export default function UserSchedule() {
           <Checkbox id="showUF" checked={showUF} setChecked={showUFSet}>
             Upload User Timelog
           </Checkbox>
+
+          <Checkbox id="showUSch" checked={showUSch} setChecked={showUSchSet}>
+            User Schedule
+          </Checkbox>
+          <Checkbox id="showUT" checked={showUT} setChecked={showUTSet}>
+            User Timelog
+          </Checkbox>
+          <Checkbox id="showUFT" checked={showUFT} setChecked={showUFTSet}>
+            User Final Timelog
+          </Checkbox>
+          <Checkbox id="showS" checked={showS} setChecked={showSSet}>
+            User Status || edit
+          </Checkbox>
         </OptionAutoClose>
-        <div className="flex w-full justify-end">
+        <div className="flex w-full justify-between">
+          <div></div>
+          <div>
+            <h1 className="max-w-96 text-wrap">
+              User Schedule,{" "}
+              {formatName(
+                user.data.firstName,
+                user.data.lastName,
+                user.data.dataId,
+              )}
+            </h1>
+          </div>
           <div>
             <BtnGoBack></BtnGoBack>
           </div>
@@ -54,20 +91,31 @@ export default function UserSchedule() {
             ></DateRangePicker>
           )}
           {scheduleListToSave.length > 0 && (
-            <Btn onClick={userSchedulePostAllUnique} isPending={isPending}>
-              Create Schedules from {formatDate(value.startDate)} to{" "}
-              {formatDate(value.endDate)}.
-            </Btn>
+            <div>
+              <Btn onClick={userSchedulePostAllUnique} isPending={isPending}>
+                Create Schedules from {formatDate(value.startDate)} to{" "}
+                {formatDate(value.endDate)}.
+              </Btn>
+            </div>
           )}
           {showUF && (
-            <BtnLink to="userTimeLogsForm">
-              <Icon>
-                <CloudArrowUpIcon></CloudArrowUpIcon> <p>Upload User Timelog</p>
-              </Icon>
-            </BtnLink>
+            <div>
+              <BtnLink to="userTimeLogForm">
+                <Icon>
+                  <CloudArrowUpIcon></CloudArrowUpIcon>
+                  <p>Upload User Timelog</p>
+                </Icon>
+              </BtnLink>
+            </div>
           )}
         </div>
-      </ContentBox1>
+        <CalendarBig
+          date={date}
+          dateSet={dateSet}
+          myArrEvents={myEvents}
+          components={components}
+        ></CalendarBig>
+      </div>
     </ContentBox0>
   );
 }

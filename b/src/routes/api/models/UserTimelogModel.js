@@ -10,14 +10,13 @@ const schema = new Schema({
     unique: true,
     required: [true, "uniqueData is required."],
   },
-  dataId: { type: String, required: [true, "firstName is required."] },
-  name: { type: String, required: [true, "firstName is required."] },
-  mode: { type: String, required: [true, "firstName is required."] },
-  dateTime: { type: String, required: [true, "firstName is required."] },
+  dataId: { type: String, required: [true, "dataId is required."] },
+  name: { type: String, required: [true, "name is required."] },
+  mode: { type: String, required: [true, "mode is required."] },
+  dateTime: { type: String, required: [true, "dateTime is required."] },
   title: {
     type: String,
     default: "UT",
-    required: [true, "firstName is required."],
   },
 });
 
