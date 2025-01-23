@@ -1,20 +1,16 @@
 import mongoose from "mongoose";
-
 import { CommonModel } from "./common/commonModel.js";
 
-const collectionName = "UserTimelog";
+const collectionName = "UserFinalTimelog";
 
 const { Schema } = mongoose;
 
 const schema = new Schema({
   ...CommonModel.userTimelog(),
-  title: {
-    type: String,
-    default: "UT",
-  },
+  title: { type: String, default: "UFT" },
 });
 
-const UserTimelogModel =
+const UserFinalTimelogModel =
   mongoose.models[collectionName] || mongoose.model(collectionName, schema);
 
-export default UserTimelogModel;
+export default UserFinalTimelogModel;

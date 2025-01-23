@@ -11,3 +11,5 @@ export default function useUserSchedule() {
 }
 
 export const UserScheduleContext = createContext();
+
+export const style = `w-fit rounded bg-zinc-800 hover:bg-zinc-600 p-1 text-xs`;

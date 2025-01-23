@@ -58,17 +58,17 @@ export default function UserWeeklyScheduleFormCustom() {
         daysOfWeek.flatMap((day) => {
           return [
             [
-              `${day}TimeIn`,
+              `${day}TimeInSelect`,
               {
-                value: schedule[day].timeIn,
-                label: schedule[day].timeIn,
+                value: schedule[day].timeInSelect,
+                label: schedule[day].timeInSelect,
               },
             ],
             [
-              `${day}TimeOut`,
+              `${day}TimeOutSelect`,
               {
-                value: schedule[day].timeOut,
-                label: schedule[day].timeOut,
+                value: schedule[day].timeOutSelect,
+                label: schedule[day].timeOutSelect,
               },
             ],
           ];
@@ -76,12 +76,11 @@ export default function UserWeeklyScheduleFormCustom() {
       );
       const finalFormData = {
         ...formdata,
-        brkDuration: {
-          value: schedule.brkDuration,
-          label: schedule.brkDuration,
+        brkDurationSelect: {
+          value: schedule.brkDurationSelect,
+          label: schedule.brkDurationSelect,
         },
       };
-      console.log(finalFormData);
       reset(finalFormData);
     }
   }, [edit, data, reset, schedule]);
@@ -90,14 +89,14 @@ export default function UserWeeklyScheduleFormCustom() {
     const trimmedData = trimStrings(data);
     const formData = daysOfWeek.reduce((acc, day) => {
       acc[day] = {
-        timeIn: trimmedData[`${day}TimeIn`].value,
-        timeOut: trimmedData[`${day}TimeOut`].value,
+        timeInSelect: trimmedData[`${day}TimeInSelect`].value,
+        timeOutSelect: trimmedData[`${day}TimeOutSelect`].value,
         day: day,
       };
       return acc;
     }, {});
-    const brkDurationValues = getValues().brkDuration.value;
-    const finalFormData = { ...formData, brkDuration: brkDurationValues };
+    const brkDurationValues = getValues().brkDurationSelect.value;
+    const finalFormData = { ...formData, brkDurationSelect: brkDurationValues };
     console.log(finalFormData);
     mutate(
       edit
@@ -140,7 +139,7 @@ export default function UserWeeklyScheduleFormCustom() {
                   <Td>{schedule[day].day}</Td>
                   <Td>
                     <Selector
-                      id={`${day}TimeIn`}
+                      id={`${day}TimeInSelect`}
                       Controller={Controller}
                       control={control}
                       errors={errors}
@@ -148,7 +147,7 @@ export default function UserWeeklyScheduleFormCustom() {
                       rules={{
                         validate: (value) => {
                           if (!value?.value && !value?.label) {
-                            return `${day}TimeIn is required.`;
+                            return `${day}TimeInSelect is required.`;
                           }
                           return true;
                         },
@@ -161,7 +160,7 @@ export default function UserWeeklyScheduleFormCustom() {
                   </Td>
                   <Td>
                     <Selector
-                      id={`${day}TimeOut`}
+                      id={`${day}TimeOutSelect`}
                       Controller={Controller}
                       control={control}
                       errors={errors}
@@ -169,7 +168,7 @@ export default function UserWeeklyScheduleFormCustom() {
                       rules={{
                         validate: (value) => {
                           if (!value?.value && !value?.label) {
-                            return `${day}TimeOut is required.`;
+                            return `${day}TimeOutSelect is required.`;
                           }
                           return true;
                         },
@@ -186,11 +185,19 @@ export default function UserWeeklyScheduleFormCustom() {
                 <Td>Break Duration</Td>
                 <Td>
                   <Selector
-                    id={`brkDuration`}
+                    id={`brkDurationSelect`}
                     Controller={Controller}
                     control={control}
                     errors={errors}
                     transparentBorder={true}
+                    rules={{
+                      validate: (value) => {
+                        if (!value?.value && !value?.label) {
+                          return `TimeOutSelect is required.`;
+                        }
+                        return true;
+                      },
+                    }}
                     options={[
                       { value: "15 mins", label: "15 mins" },
                       { value: "30 mins", label: "30 mins" },

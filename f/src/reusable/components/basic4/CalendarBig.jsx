@@ -6,8 +6,9 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./calendarBig.css";
 
 import CalendarYear from "./CalendarYear";
-import { useLocalStorage } from "../../hooks/useHook1";
-import { useCallback, useMemo } from "react";
+import { useLocalStorage, useLocalStorageDate } from "../../hooks/useHook1";
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -20,26 +21,45 @@ let allViews = {
 };
 
 export default function CalendarBig({
-  myArrEvents = [],
-  onSelectSlot = () => {},
-  onSelectEvent = () => {},
+  myEvents = [],
   components = {},
-  date = {},
-  dateSet = () => {},
+  to = "/",
 }) {
+  const navigate = useNavigate();
+
+  const [date, dateSet] = useLocalStorageDate("CalendarBigDate", dayjs());
+
   const [view, viewSet] = useLocalStorage("CalendarBigView", Views.DAY);
 
   const onView = useCallback((newView) => viewSet(newView), [viewSet]);
   const onNavigate = useCallback((date) => dateSet(date), [dateSet]);
 
-  const { events } = useMemo(() => ({ events: myArrEvents }), [myArrEvents]);
+  const events = myEvents.filter((item) =>
+    dayjs(item.start).isSame(dayjs(date), "month"),
+  );
+
+  const handleSelectEvent = useCallback(
+    (e) => {
+      onView(Views.DAY);
+      onNavigate(e.start);
+    },
+    [onNavigate, onView],
+  );
+
+  const handleSelectSlot = useCallback(
+    (e) => {
+      dateSet(e.start);
+      navigate(to);
+    },
+    [navigate, to, dateSet],
+  );
 
   return (
     <div className="flex h-full w-full flex-col">
       <div className="h-screen">
         <Calendar
-          onSelectSlot={onSelectSlot}
-          onSelectEvent={onSelectEvent}
+          onSelectSlot={handleSelectSlot}
+          onSelectEvent={handleSelectEvent}
           selectable
           components={components}
           date={date}
@@ -61,9 +81,6 @@ export default function CalendarBig({
 
 CalendarBig.propTypes = {
   components: PropTypes.object,
-  date: PropTypes.object,
-  dateSet: PropTypes.func,
-  myArrEvents: PropTypes.array,
-  onSelectEvent: PropTypes.func,
-  onSelectSlot: PropTypes.func,
+  myEvents: PropTypes.array,
+  to: PropTypes.string,
 };

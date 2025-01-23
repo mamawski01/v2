@@ -5,18 +5,18 @@ const collectionName = "WeeklyUserSchedule";
 const { Schema } = mongoose;
 
 const schema = new Schema({
-  brkDuration: {
+  brkDurationSelect: {
     type: String,
     required: [true, "Break duration is required"],
     default: "60 mins",
   },
   monday: {
-    timeIn: {
+    timeInSelect: {
       type: String,
       required: [true, "Monday time in is required"],
       default: "09:00 am",
     },
-    timeOut: {
+    timeOutSelect: {
       type: String,
       required: [true, "Monday time out is required"],
       default: "06:00 pm",
@@ -28,12 +28,12 @@ const schema = new Schema({
     },
   },
   tuesday: {
-    timeIn: {
+    timeInSelect: {
       type: String,
       required: [true, "Tuesday time in is required"],
       default: "09:00 am",
     },
-    timeOut: {
+    timeOutSelect: {
       type: String,
       required: [true, "Tuesday time out is required"],
       default: "06:00 pm",
@@ -45,12 +45,12 @@ const schema = new Schema({
     },
   },
   wednesday: {
-    timeIn: {
+    timeInSelect: {
       type: String,
       required: [true, "Wednesday time in is required"],
       default: "09:00 am",
     },
-    timeOut: {
+    timeOutSelect: {
       type: String,
       required: [true, "Wednesday time out is required"],
       default: "06:00 pm",
@@ -62,12 +62,12 @@ const schema = new Schema({
     },
   },
   thursday: {
-    timeIn: {
+    timeInSelect: {
       type: String,
       required: [true, "Thursday time in is required"],
       default: "09:00 am",
     },
-    timeOut: {
+    timeOutSelect: {
       type: String,
       required: [true, "Thursday time out is required"],
       default: "06:00 pm",
@@ -79,12 +79,12 @@ const schema = new Schema({
     },
   },
   friday: {
-    timeIn: {
+    timeInSelect: {
       type: String,
       required: [true, "Friday time in is required"],
       default: "09:00 am",
     },
-    timeOut: {
+    timeOutSelect: {
       type: String,
       required: [true, "Friday time out is required"],
       default: "06:00 pm",
@@ -96,12 +96,12 @@ const schema = new Schema({
     },
   },
   saturday: {
-    timeIn: {
+    timeInSelect: {
       type: String,
       required: [true, "Saturday time in is required"],
       default: "09:00 am",
     },
-    timeOut: {
+    timeOutSelect: {
       type: String,
       required: [true, "Saturday time out is required"],
       default: "06:00 pm",
@@ -113,12 +113,12 @@ const schema = new Schema({
     },
   },
   sunday: {
-    timeIn: {
+    timeInSelect: {
       type: String,
       required: [true, "Sunday time in is required"],
       default: "09:00 am",
     },
-    timeOut: {
+    timeOutSelect: {
       type: String,
       required: [true, "Sunday time out is required"],
       default: "06:00 pm",

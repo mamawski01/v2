@@ -196,6 +196,36 @@ export async function postUnique(rq, rs, model) {
   }
 }
 
+export async function postUXC(rq, rs, model, modelToHaveExtraCopy) {
+  try {
+    const prevData = await model.find();
+    const isArray = Array.isArray(rq.body);
+    const req = isArray ? rq.body : [rq.body];
+
+    const filteredDataOfNewAndPrev = req.filter(
+      (newItem) =>
+        !prevData.some((prevItem) => prevItem.uniqueData === newItem.uniqueData)
+    );
+    const filteredData = filteredDataOfNewAndPrev.reduce((acc, current) => {
+      if (!acc.find((item) => item.uniqueData === current.uniqueData)) {
+        acc.push(current);
+      }
+      return acc;
+    }, []);
+    const data = await model.insertMany(filteredData);
+
+    await Promise.all(
+      modelToHaveExtraCopy.map(async (obj) => {
+        await obj.insertMany(filteredData);
+      })
+    );
+
+    return DataHandler.isFound(rs, data);
+  } catch (error) {
+    return DataHandler.ifError(rq, rs, error);
+  }
+}
+
 export async function patchFile(rq, rs, model, folderName) {
   try {
     const { id } = rq.params;
@@ -291,12 +321,18 @@ export async function removeFanDData(
     DataHandler.delPrevFile(folderName, user.file);
     //userPrevFile
     const data = await model.findByIdAndDelete(id);
-    modelToBeRemoveObj.forEach(async (obj) => {
-      await obj.model.findByIdAndDelete(user[obj.entry]);
-    });
-    modelDataToBeRemoveObj.forEach(async (obj) => {
-      await obj.deleteMany({ dataId: data.dataId });
-    });
+
+    await Promise.all(
+      modelToBeRemoveObj.map(async (obj) => {
+        await obj.model.findByIdAndDelete(user[obj.entry]);
+      })
+    );
+
+    await Promise.all(
+      modelDataToBeRemoveObj.map(async (obj) => {
+        await obj.deleteMany({ dataId: data.dataId });
+      })
+    );
     return DataHandler.isFound(rs, data);
   } catch (error) {
     return DataHandler.ifError(rq, rs, error);

@@ -69,6 +69,7 @@ export async function onSubmitForm(data, dataType) {
     return finalData;
   }
   if (dataType === "text") return trimmedData;
+  if (dataType === "timelog") return convertToJson(data.file[0]);
 }
 
 function convertToJson(file) {

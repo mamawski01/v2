@@ -8,12 +8,9 @@ export const defineAbility = ({ id, role, fileId }) => {
   if (role === "admin") can("manage", "all");
 
   if (role === "manager") {
-    console.log("manager");
-    can("read", "all");
-    can("manage", "registryUser");
+    can("manage", "all");
     cannot("update", "confirmedUser");
-    if (sameId(id, fileId)) can("delete", "confirmedUser");
-    can("manage", "userSchedule");
+    if (notSameId(id, fileId)) cannot("delete", "confirmedUser");
   }
 
   if (role === "user") {
@@ -22,14 +19,14 @@ export const defineAbility = ({ id, role, fileId }) => {
   return build();
 };
 
-function sameId(ownerId, fileId) {
+function notSameId(ownerId, fileId) {
   const schema = Joi.object({
     ownerId: Joi.string(),
     fileId: Joi.string(),
   }).validate({ ownerId, fileId });
   schemaResult(schema);
 
-  if (ownerId === fileId) return true;
+  if (ownerId !== fileId) return true;
   return false;
 }
 

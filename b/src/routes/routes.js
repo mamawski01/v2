@@ -17,6 +17,7 @@ import {
   postFile,
   postOne,
   postUnique,
+  postUXC,
   removeFanDData,
   removeOne,
   transferOne,
@@ -32,6 +33,7 @@ import {
 } from "./rolePermission.js";
 import UserScheduleModel from "./api/models/UserScheduleModel.js";
 import UserTimelogModel from "./api/models/UserTimelogModel.js";
+import UserFinalTimelogModel from "./api/models/UserFinalTimelogModel.js";
 
 export const routes = express.Router();
 
@@ -91,7 +93,11 @@ export const urlArr = [
         entry: "weeklySchedule",
       },
     ],
-    modelDataToBeRemoveObj: [UserScheduleModel],
+    modelDataToBeRemoveObj: [
+      UserScheduleModel,
+      UserTimelogModel,
+      UserFinalTimelogModel,
+    ],
   },
   {
     url: "/confirmedUser/loginFile",
@@ -138,6 +144,32 @@ export const urlArr = [
     url: "/userTimelog/getOne/:id",
     model: UserTimelogModel,
   },
+  {
+    url: "/userTimelog/getGroup/:id",
+    model: UserTimelogModel,
+  },
+  {
+    url: "/userTimelog/postUXC",
+    model: UserTimelogModel,
+    modelToHaveExtraCopy: [UserFinalTimelogModel],
+  },
+  //userFinalTimelog
+  {
+    url: "/userFinalTimelog/getOne/:id",
+    model: UserFinalTimelogModel,
+  },
+  {
+    url: "/userFinalTimelog/getGroup/:id",
+    model: UserFinalTimelogModel,
+  },
+  {
+    url: "/userFinalTimelog/patchOne/:id",
+    model: UserFinalTimelogModel,
+  },
+  {
+    url: "/userFinalTimelog/removeOne/:id",
+    model: UserFinalTimelogModel,
+  },
 ];
 
 //for systemUrl
@@ -183,6 +215,11 @@ urlArr.forEach((item) => {
   if (item.url.includes("postUnique")) {
     routes.post(item.url, verifyToken, (rq, rs) => {
       postUnique(rq, rs, item.model);
+    });
+  }
+  if (item.url.includes("postUXC")) {
+    routes.post(item.url, verifyToken, (rq, rs) => {
+      postUXC(rq, rs, item.model, item.modelToHaveExtraCopy);
     });
   }
   if (item.url.includes("patchFile")) {

@@ -20,8 +20,8 @@ export default function RegistryUserForm() {
     <FormCommon
       title={"Registry User Form"}
       getOne={registryUserGetOne}
-      patchFile={registryUserPatchFile}
-      postFile={registryUserPostFile}
+      patchOne={registryUserPatchFile}
+      postOne={registryUserPostFile}
       onDelete={onDeleteRegistryUser}
       id={id}
       edit={edit}

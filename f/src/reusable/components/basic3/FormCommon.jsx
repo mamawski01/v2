@@ -31,8 +31,8 @@ import File from "../basic0/File";
 export default function FormCommon({
   title,
   getOne,
-  patchFile,
-  postFile = "",
+  patchOne,
+  postOne = "",
   onDelete,
   id = "",
   edit = false,
@@ -96,8 +96,8 @@ export default function FormCommon({
         )
       : mutate(
           edit
-            ? patch(patchFile + id, await onSubmitForm(formData, dataType))
-            : post(postFile, await onSubmitForm(formData, dataType)),
+            ? patch(patchOne + id, await onSubmitForm(formData, dataType))
+            : post(postOne, await onSubmitForm(formData, dataType)),
         );
   }
 
@@ -207,7 +207,7 @@ FormCommon.propTypes = {
   id: PropTypes.string,
   loginObj: PropTypes.object,
   onDelete: PropTypes.func,
-  patchFile: PropTypes.string,
-  postFile: PropTypes.string,
+  patchOne: PropTypes.string,
+  postOne: PropTypes.string,
   title: PropTypes.string,
 };

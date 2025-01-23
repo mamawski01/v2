@@ -66,6 +66,12 @@ export function formatDate(date) {
   isValidDate2(date);
   return dayjs(date).format("YYYY-MM-DD");
 }
+
+export function formatTime(date) {
+  isValidDate2(date);
+  return dayjs(date).format("hh:mm:ss a");
+}
+
 export function formatName(firstName, lastName, dataId) {
   //params check
   const schema = Joi.object({

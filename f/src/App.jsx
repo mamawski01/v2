@@ -22,6 +22,7 @@ import UserWeeklyScheduleFormCustom from "./pages/userSchedule/UserWeeklySchedul
 import UserSchedule from "./pages/userSchedule/userSchedule/UserSchedule";
 import UserScheduleProvider from "./pages/userSchedule/userSchedule/UserScheduleProvider";
 import UserTimeLogForm from "./pages/userSchedule/userSchedule/UserTimeLogForm";
+import UserScheduleForm from "./pages/userSchedule/userSchedule/UserScheduleForm";
 
 const routes = [
   {
@@ -78,6 +79,10 @@ const routes = [
       {
         path: "homepage/manageUsers/userSchedule/:id/:dId/userTimeLogForm",
         element: <UserTimeLogForm />,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:uid/userScheduleForm/:uidSchedule",
+        element: <UserScheduleForm />,
       },
     ],
   },

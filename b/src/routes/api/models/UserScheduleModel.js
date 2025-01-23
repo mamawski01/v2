@@ -10,9 +10,12 @@ const schema = new Schema({
   middleName: { type: String, required: [true, "middleName is required."] },
   lastName: { type: String, required: [true, "lastName is required."] },
   dataId: { type: String, required: [true, "dataId is required."] },
-  timeIn: { type: String, required: [true, "timeIn is required."] },
-  timeOut: { type: String, required: [true, "timeOut is required."] },
-  brkDuration: { type: String, required: [true, "brkDuration is required."] },
+  timeInSelect: { type: String, required: [true, "timeIn is required."] },
+  timeOutSelect: { type: String, required: [true, "timeOut is required."] },
+  brkDurationSelect: {
+    type: String,
+    required: [true, "brkDuration is required."],
+  },
   title: { type: String, default: "US" },
 });
 

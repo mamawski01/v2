@@ -19,7 +19,7 @@ export default function ConfirmedUserForm() {
     <FormCommon
       title={"Confirmed User Form"}
       getOne={confirmedUserGetOne}
-      patchFile={confirmedUserPatchFile}
+      patchOne={confirmedUserPatchFile}
       onDelete={onDeleteConfirmedUser}
       id={id}
       edit={edit}

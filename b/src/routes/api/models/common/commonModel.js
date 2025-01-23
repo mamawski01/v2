@@ -46,4 +46,17 @@ export class CommonModel {
       file: { type: String, required: [true, "File is required."] },
     };
   }
+  static userTimelog() {
+    return {
+      uniqueData: {
+        type: String,
+        unique: true,
+        required: [true, "uniqueData is required."],
+      },
+      dataId: { type: String, required: [true, "dataId is required."] },
+      name: { type: String, required: [true, "name is required."] },
+      mode: { type: String, required: [true, "mode is required."] },
+      dateTime: { type: String, required: [true, "dateTime is required."] },
+    };
+  }
 }

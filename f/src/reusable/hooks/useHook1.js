@@ -47,6 +47,13 @@ export const userScheduleGetGroup = colonRemove(urlEvents[16]);
 export const userSchedulePostUnique = colonRemove(urlEvents[17]);
 export const userSchedulePatchOne = colonRemove(urlEvents[18]);
 export const userScheduleRemoveOne = colonRemove(urlEvents[19]);
+export const userTimelogGetOne = colonRemove(urlEvents[20]);
+export const userTimelogGetGroup = colonRemove(urlEvents[21]);
+export const userTimelogPostUnique = colonRemove(urlEvents[22]);
+export const userFinalTimelogGetOne = colonRemove(urlEvents[23]);
+export const userFinalTimelogGetGroup = colonRemove(urlEvents[24]);
+export const userFinalTimelogPatchOne = colonRemove(urlEvents[25]);
+export const userFinalTimelogRemoveOne = colonRemove(urlEvents[26]);
 
 function colonRemove(url) {
   return url.split(":")[0];

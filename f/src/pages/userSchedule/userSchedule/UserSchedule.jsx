@@ -33,8 +33,6 @@ export default function UserSchedule() {
     showS,
     showSSet,
     myEvents,
-    date,
-    dateSet,
     components,
   } = useUserSchedule();
   const { value, valueSet } = useGlobal();
@@ -109,12 +107,7 @@ export default function UserSchedule() {
             </div>
           )}
         </div>
-        <CalendarBig
-          date={date}
-          dateSet={dateSet}
-          myArrEvents={myEvents}
-          components={components}
-        ></CalendarBig>
+        <CalendarBig myEvents={myEvents} components={components}></CalendarBig>
       </div>
     </ContentBox0>
   );

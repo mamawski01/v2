@@ -18,10 +18,15 @@ export default function OptionAutoClose({
         collapseSet(false);
       }
     }
+    function onBlur() {
+      collapseSet(false);
+    }
     document.addEventListener("click", callBack);
+    document.addEventListener("blur", onBlur);
     //cleaning
     return () => {
       document.removeEventListener("click", callBack);
+      window.removeEventListener("blur", onBlur);
     };
   }, [collapseSet]);
 
