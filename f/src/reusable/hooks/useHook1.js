@@ -54,6 +54,12 @@ export const userFinalTimelogGetOne = colonRemove(urlEvents[23]);
 export const userFinalTimelogGetGroup = colonRemove(urlEvents[24]);
 export const userFinalTimelogPatchOne = colonRemove(urlEvents[25]);
 export const userFinalTimelogRemoveOne = colonRemove(urlEvents[26]);
+export const userEventGetOne = colonRemove(urlEvents[27]);
+export const userEventGetGroup = colonRemove(urlEvents[28]);
+export const userEventGetGroupAll = colonRemove(urlEvents[29]);
+export const userEventPostOne = colonRemove(urlEvents[30]);
+export const userEventPatchOne = colonRemove(urlEvents[31]);
+export const userEventRemoveOne = colonRemove(urlEvents[32]);
 
 function colonRemove(url) {
   return url.split(":")[0];

@@ -7,6 +7,8 @@ import {
   useFetch,
   useLocalStorage,
   useMutate,
+  userEventGetGroup,
+  userEventGetGroupAll,
   userFinalTimelogGetGroup,
   userScheduleGetGroup,
   userSchedulePostUnique,
@@ -20,6 +22,7 @@ import { useMemo } from "react";
 import Stat from "./Stat";
 import Us from "./Us";
 import Ut from "./Ut";
+import E from "./E";
 
 export default function UserScheduleProvider({ children }) {
   const { mutate, isPending } = useMutate();
@@ -30,12 +33,16 @@ export default function UserScheduleProvider({ children }) {
   const { data: userSchedule } = useFetch(userScheduleGetGroup + dId);
   const { data: userTimelog } = useFetch(userTimelogGetGroup + dId);
   const { data: userFinalTimelog } = useFetch(userFinalTimelogGetGroup + dId);
+  const { data: userEvent } = useFetch(userEventGetGroup + dId);
+  const { data: allUserEvent } = useFetch(userEventGetGroupAll + "0");
 
   const dbData =
     user?.data &&
     userSchedule?.data &&
     userTimelog?.data &&
-    userFinalTimelog?.data;
+    userFinalTimelog?.data &&
+    userEvent?.data &&
+    allUserEvent?.data;
 
   const [showUS, showUSSet] = useLocalStorage("showUS", false);
   const [showUF, showUFSet] = useLocalStorage("showUF", false);
@@ -44,6 +51,7 @@ export default function UserScheduleProvider({ children }) {
   const [showUSch, showUSchSet] = useLocalStorage("showUSch", false);
   const [showUT, showUTSet] = useLocalStorage("showUT", false);
   const [showUFT, showUFTSet] = useLocalStorage("showUFT", false);
+  const [showE, showESet] = useLocalStorage("showE", false);
 
   const { finalDatesArr } = useGlobal();
 
@@ -63,6 +71,9 @@ export default function UserScheduleProvider({ children }) {
           }
           case "UFT": {
             return <Ut e={e}></Ut>;
+          }
+          case "E": {
+            return <E e={e}></E>;
           }
           default: {
             return <div className="text-xs">{e.title}</div>;
@@ -99,12 +110,18 @@ export default function UserScheduleProvider({ children }) {
     const ut = utFx(userTimelog.data);
     const uft = utFx(userFinalTimelog.data);
     const uSch = uSchFx(userSchedule.data);
-    const s = scheduleListEvent(userSchedule, userTimelog, userFinalTimelog);
+    const s = scheduleListEvent(userSchedule, userTimelog, userFinalTimelog, [
+      ...userEvent.data,
+      ...allUserEvent.data,
+    ]);
+    const e = events([...userEvent.data, ...allUserEvent.data]);
+
     const myEvents = [
       ...(showS ? s : []),
       ...(showUSch ? uSch : []),
       ...(showUT ? ut : []),
       ...(showUFT ? uft : []),
+      ...(showE ? e : []),
     ];
 
     return (
@@ -128,6 +145,8 @@ export default function UserScheduleProvider({ children }) {
           showSSet,
           myEvents,
           components,
+          showE,
+          showESet,
         }}
       >
         {children}
@@ -144,7 +163,7 @@ function scheduleListEvent(...scheduleList) {
   const us = scheduleList[0].data;
   const ut = scheduleList[1].data;
   const uft = scheduleList[2].data;
-  //  const e = scheduleList[3];
+  const e = scheduleList[3];
   //  const w = scheduleList[4].data[0];
   //  const p = scheduleList[5].data;
 
@@ -156,7 +175,7 @@ function scheduleListEvent(...scheduleList) {
     const uftItems = uft.filter((uftItem) =>
       uftItem.dateTime.startsWith(startDate),
     );
-    //  const eItems = e.filter((eItem) => eItem.date.startsWith(startDate));
+    const eItems = e.filter((eItem) => eItem.date.startsWith(startDate));
     //  const pItems = p.filter((eItem) =>
     //    eItem.uniqueData.startsWith(startDate),
     //  );
@@ -169,7 +188,7 @@ function scheduleListEvent(...scheduleList) {
         us: usItem,
         ut: utItems,
         uft: uftItems,
-        //  e: eItems,
+        e: eItems,
         //  w,
         //  p: pItems,
       },

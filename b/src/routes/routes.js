@@ -34,6 +34,7 @@ import {
 import UserScheduleModel from "./api/models/UserScheduleModel.js";
 import UserTimelogModel from "./api/models/UserTimelogModel.js";
 import UserFinalTimelogModel from "./api/models/UserFinalTimelogModel.js";
+import UserEventModel from "./api/models/UserEventModel.js";
 
 export const routes = express.Router();
 
@@ -97,6 +98,7 @@ export const urlArr = [
       UserScheduleModel,
       UserTimelogModel,
       UserFinalTimelogModel,
+      UserEventModel,
     ],
   },
   {
@@ -169,6 +171,32 @@ export const urlArr = [
   {
     url: "/userFinalTimelog/removeOne/:id",
     model: UserFinalTimelogModel,
+  },
+  //userEvent
+
+  {
+    url: "/userEvent/getOne/:id",
+    model: UserEventModel,
+  },
+  {
+    url: "/userEvent/getGroup/:id",
+    model: UserEventModel,
+  },
+  {
+    url: "/userEventAll/getGroup/:id",
+    model: UserEventModel,
+  },
+  {
+    url: "/userEvent/postOne",
+    model: UserEventModel,
+  },
+  {
+    url: "/userEvent/patchOne",
+    model: UserEventModel,
+  },
+  {
+    url: "/userEvent/removeOne/:id",
+    model: UserEventModel,
   },
 ];
 

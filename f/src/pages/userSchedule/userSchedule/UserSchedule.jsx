@@ -34,6 +34,8 @@ export default function UserSchedule() {
     showSSet,
     myEvents,
     components,
+    showE,
+    showESet,
   } = useUserSchedule();
   const { value, valueSet } = useGlobal();
   return (
@@ -62,6 +64,9 @@ export default function UserSchedule() {
           </Checkbox>
           <Checkbox id="showS" checked={showS} setChecked={showSSet}>
             User Status || edit
+          </Checkbox>
+          <Checkbox id="showE" checked={showE} setChecked={showESet}>
+            User Event || edit
           </Checkbox>
         </OptionAutoClose>
         <div className="flex w-full justify-between">
@@ -107,7 +112,11 @@ export default function UserSchedule() {
             </div>
           )}
         </div>
-        <CalendarBig myEvents={myEvents} components={components}></CalendarBig>
+        <CalendarBig
+          myEvents={myEvents}
+          components={components}
+          to="eventOptions"
+        ></CalendarBig>
       </div>
     </ContentBox0>
   );

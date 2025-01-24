@@ -66,6 +66,10 @@ export function formatDate(date) {
   isValidDate2(date);
   return dayjs(date).format("YYYY-MM-DD");
 }
+export function formatDateComplete(date) {
+  isValidDate2(date);
+  return dayjs(date).format("YYYY MMMM DD, dddd");
+}
 
 export function formatTime(date) {
   isValidDate2(date);

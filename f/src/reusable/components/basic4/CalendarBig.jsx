@@ -49,7 +49,7 @@ export default function CalendarBig({
   const handleSelectSlot = useCallback(
     (e) => {
       dateSet(e.start);
-      navigate(to);
+      navigate(to, { state: e });
     },
     [navigate, to, dateSet],
   );

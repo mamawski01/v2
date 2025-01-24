@@ -23,6 +23,8 @@ import UserSchedule from "./pages/userSchedule/userSchedule/UserSchedule";
 import UserScheduleProvider from "./pages/userSchedule/userSchedule/UserScheduleProvider";
 import UserTimeLogForm from "./pages/userSchedule/userSchedule/UserTimeLogForm";
 import UserScheduleForm from "./pages/userSchedule/userSchedule/UserScheduleForm";
+import EventForm from "./pages/userSchedule/userSchedule/EventForm";
+import EventOptions from "./pages/userSchedule/userSchedule/EventOptions";
 
 const routes = [
   {
@@ -83,6 +85,30 @@ const routes = [
       {
         path: "homepage/manageUsers/userSchedule/:id/:uid/userScheduleForm/:uidSchedule",
         element: <UserScheduleForm />,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:uid/eventForm/:eId",
+        element: <EventForm />,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:uid/eventOptions",
+        element: <EventOptions></EventOptions>,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:uid/eventOptions/userScheduleForm",
+        element: <UserScheduleForm />,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:uid/eventOptions/eventForm",
+        element: <EventForm></EventForm>,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:uid/eventOptions/eventForm/:all",
+        element: <EventForm></EventForm>,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:uid/eventForm/:eId",
+        element: <EventForm />,
       },
     ],
   },
