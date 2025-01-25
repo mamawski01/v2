@@ -191,7 +191,7 @@ export const urlArr = [
     model: UserEventModel,
   },
   {
-    url: "/userEvent/patchOne",
+    url: "/userEvent/patchOne/:id",
     model: UserEventModel,
   },
   {

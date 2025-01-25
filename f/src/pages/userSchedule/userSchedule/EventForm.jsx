@@ -31,7 +31,6 @@ export default function EventForm() {
 
   const location = useLocation();
   const eData = location?.state;
-  console.log(eData);
 
   const {
     control,
@@ -95,7 +94,7 @@ export default function EventForm() {
 
     const formData = {
       ...trimmedData,
-      date: formatDate(eData.eData.start),
+      date: formatDate(eData.start),
       eventName: eventName.split(" (add event description)")[0],
       firstName: forAll ? "All users" : eData.data.firstName,
       eventType,
