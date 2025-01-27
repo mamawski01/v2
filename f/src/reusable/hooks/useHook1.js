@@ -60,6 +60,15 @@ export const userEventGetGroupAll = colonRemove(urlEvents[29]);
 export const userEventPostOne = colonRemove(urlEvents[30]);
 export const userEventPatchOne = colonRemove(urlEvents[31]);
 export const userEventRemoveOne = colonRemove(urlEvents[32]);
+export const userWageGetGroup = colonRemove(urlEvents[33]);
+export const userWagePostOne = colonRemove(urlEvents[34]);
+export const userWagePatchOne = colonRemove(urlEvents[35]);
+export const wageRateGetLocal = colonRemove(urlEvents[36]);
+export const userPayrollGetOne = colonRemove(urlEvents[37]);
+export const userPayrollGetGroup = colonRemove(urlEvents[38]);
+export const userPayrollPostUnique = colonRemove(urlEvents[39]);
+export const userPayrollPatchOne = colonRemove(urlEvents[40]);
+export const userPayrollRemoveOne = colonRemove(urlEvents[41]);
 
 function colonRemove(url) {
   return url.split(":")[0];

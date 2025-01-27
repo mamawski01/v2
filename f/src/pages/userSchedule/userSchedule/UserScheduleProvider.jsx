@@ -10,9 +10,12 @@ import {
   userEventGetGroup,
   userEventGetGroupAll,
   userFinalTimelogGetGroup,
+  userPayrollGetGroup,
   userScheduleGetGroup,
   userSchedulePostUnique,
   userTimelogGetGroup,
+  userWageGetGroup,
+  wageRateGetLocal,
 } from "../../../reusable/hooks/useHook1";
 import { useParams } from "react-router-dom";
 import Loading from "../../../reusable/components/basic1/Loading";
@@ -35,6 +38,9 @@ export default function UserScheduleProvider({ children }) {
   const { data: userFinalTimelog } = useFetch(userFinalTimelogGetGroup + dId);
   const { data: userEvent } = useFetch(userEventGetGroup + dId);
   const { data: allUserEvent } = useFetch(userEventGetGroupAll + "0");
+  const { data: userWage } = useFetch(userWageGetGroup + dId);
+  const { data: wageRate } = useFetch(wageRateGetLocal);
+  const { data: payroll } = useFetch(userPayrollGetGroup + dId);
 
   const dbData =
     user?.data &&
@@ -42,7 +48,10 @@ export default function UserScheduleProvider({ children }) {
     userTimelog?.data &&
     userFinalTimelog?.data &&
     userEvent?.data &&
-    allUserEvent?.data;
+    allUserEvent?.data &&
+    userWage?.data &&
+    wageRate?.data &&
+    payroll?.data;
 
   const [showUS, showUSSet] = useLocalStorage("showUS", false);
   const [showUF, showUFSet] = useLocalStorage("showUF", false);
@@ -52,6 +61,7 @@ export default function UserScheduleProvider({ children }) {
   const [showUT, showUTSet] = useLocalStorage("showUT", false);
   const [showUFT, showUFTSet] = useLocalStorage("showUFT", false);
   const [showE, showESet] = useLocalStorage("showE", false);
+  const [showP, showPSet] = useLocalStorage("showP", false);
 
   const { finalDatesArr } = useGlobal();
 
@@ -60,7 +70,6 @@ export default function UserScheduleProvider({ children }) {
       event: (e) => {
         switch (e.title) {
           case "Stat": {
-            console.log(e);
             return <Stat e={e}></Stat>;
           }
           case "US": {
@@ -110,11 +119,17 @@ export default function UserScheduleProvider({ children }) {
     const ut = utFx(userTimelog.data);
     const uft = utFx(userFinalTimelog.data);
     const uSch = uSchFx(userSchedule.data);
-    const s = scheduleListEvent(userSchedule, userTimelog, userFinalTimelog, [
-      ...userEvent.data,
-      ...allUserEvent.data,
-    ]);
+    const s = scheduleListEvent(
+      userSchedule,
+      userTimelog,
+      userFinalTimelog,
+      [...userEvent.data, ...allUserEvent.data],
+      userWage,
+      payroll,
+    );
     const e = events([...userEvent.data, ...allUserEvent.data]);
+
+    const p = uniqueData(payroll.data);
 
     const myEvents = [
       ...(showS ? s : []),
@@ -122,6 +137,7 @@ export default function UserScheduleProvider({ children }) {
       ...(showUT ? ut : []),
       ...(showUFT ? uft : []),
       ...(showE ? e : []),
+      ...(showP ? p : []),
     ];
 
     return (
@@ -134,6 +150,7 @@ export default function UserScheduleProvider({ children }) {
           showUFSet,
           scheduleListToSave,
           isPending,
+          mutate,
           userSchedulePostAllUnique,
           showUSch,
           showUSchSet,
@@ -147,6 +164,8 @@ export default function UserScheduleProvider({ children }) {
           components,
           showE,
           showESet,
+          userWage,
+          wageRate,
         }}
       >
         {children}
@@ -164,8 +183,8 @@ function scheduleListEvent(...scheduleList) {
   const ut = scheduleList[1].data;
   const uft = scheduleList[2].data;
   const e = scheduleList[3];
-  //  const w = scheduleList[4].data[0];
-  //  const p = scheduleList[5].data;
+  const w = scheduleList[4].data[0];
+  const p = scheduleList[5].data;
 
   const expectedArray = us.map((usItem) => {
     const startDate = usItem.uniqueData.split(" ")[0];
@@ -176,9 +195,7 @@ function scheduleListEvent(...scheduleList) {
       uftItem.dateTime.startsWith(startDate),
     );
     const eItems = e.filter((eItem) => eItem.date.startsWith(startDate));
-    //  const pItems = p.filter((eItem) =>
-    //    eItem.uniqueData.startsWith(startDate),
-    //  );
+    const pItems = p.filter((eItem) => eItem.uniqueData.startsWith(startDate));
 
     return {
       title: "Stat",
@@ -189,8 +206,8 @@ function scheduleListEvent(...scheduleList) {
         ut: utItems,
         uft: uftItems,
         e: eItems,
-        //  w,
-        //  p: pItems,
+        w,
+        p: pItems,
       },
     };
   });
@@ -239,4 +256,16 @@ function uSchFx(timelog) {
   });
 
   return expectedArray;
+}
+
+function uniqueData(arr) {
+  const expectedArr = arr.map((event) => {
+    return {
+      title: event.title,
+      start: dayjs(`${event.uniqueData.split(" ")[0]} 02:00:00`).$d,
+      end: dayjs(`${event.uniqueData.split(" ")[0]} 07:00:00`).$d,
+      data: event,
+    };
+  });
+  return expectedArr;
 }

@@ -35,6 +35,9 @@ import UserScheduleModel from "./api/models/UserScheduleModel.js";
 import UserTimelogModel from "./api/models/UserTimelogModel.js";
 import UserFinalTimelogModel from "./api/models/UserFinalTimelogModel.js";
 import UserEventModel from "./api/models/UserEventModel.js";
+import UserWageModel from "./api/models/UserWageModel.js";
+import { wageRate } from "./api/models/wageRate.js";
+import UserPayrollModel from "./api/models/UserPayrollModel.js";
 
 export const routes = express.Router();
 
@@ -99,6 +102,8 @@ export const urlArr = [
       UserTimelogModel,
       UserFinalTimelogModel,
       UserEventModel,
+      UserWageModel,
+      UserPayrollModel,
     ],
   },
   {
@@ -173,7 +178,6 @@ export const urlArr = [
     model: UserFinalTimelogModel,
   },
   //userEvent
-
   {
     url: "/userEvent/getOne/:id",
     model: UserEventModel,
@@ -197,6 +201,45 @@ export const urlArr = [
   {
     url: "/userEvent/removeOne/:id",
     model: UserEventModel,
+  },
+  //userWage
+  {
+    url: "/userWage/getGroup/:id",
+    model: UserWageModel,
+  },
+  {
+    url: "/userWage/postOne",
+    model: UserWageModel,
+  },
+  {
+    url: "/userWage/patchOne/:id",
+    model: UserWageModel,
+  },
+  //wageRate
+  {
+    url: "/wageRate/getLocal",
+    model: wageRate,
+  },
+  //userPayroll
+  {
+    url: "/userPayroll/getOne/:id",
+    model: UserPayrollModel,
+  },
+  {
+    url: "/userPayroll/getGroup/:id",
+    model: UserPayrollModel,
+  },
+  {
+    url: "/userPayroll/postUnique",
+    model: UserPayrollModel,
+  },
+  {
+    url: "/userPayroll/patchOne/:id",
+    model: UserPayrollModel,
+  },
+  {
+    url: "/userPayroll/removeOne/:id",
+    model: UserPayrollModel,
   },
 ];
 
