@@ -1,5 +1,11 @@
 import PropTypes from "prop-types";
-// import dayjs from "dayjs";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import objectSupport from "dayjs/plugin/objectSupport";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(duration);
+dayjs.extend(objectSupport);
+dayjs.extend(customParseFormat);
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -10,6 +16,7 @@ import {
   formatTime_hhmm_ss,
   pureTimeAdder,
   timeDiff,
+  timeToNum,
   toNumb,
   toPeso,
   twoDecimal,
@@ -51,11 +58,11 @@ export default function Stat({ e }) {
   );
   const timeInSelect = dayOff
     ? dayOff
-    : formatDateUsable(`${date} ${us.timeInSelect}`);
+    : formatDateUsable(`${date} ${us.timeInSelect}`, true);
 
   const timeOutSelect = dayOff
     ? dayOff
-    : formatDateUsable(`${date} ${us.timeOutSelect}`);
+    : formatDateUsable(`${date} ${us.timeOutSelect}`, true);
 
   const uft = data.uft;
 
@@ -65,7 +72,7 @@ export default function Stat({ e }) {
   const onDuty =
     uft.length > 0 && !dayOff && isTomorrowOrLater ? `onDuty` : false;
 
-  const userId = onDuty && uft[0].userId;
+  const dataId = onDuty && uft[0].dataId;
   const name = onDuty && uft[0].name;
   const mode = onDuty && uft[0].mode;
 
@@ -225,15 +232,6 @@ export default function Stat({ e }) {
   const dayW = wageRule.day;
 
   //final wage
-  function timeToNum(time) {
-    if (time === false) return 0;
-    const parsedDutyHrs = dayjs(time, "HH:mm:ss");
-    return (
-      parsedDutyHrs.hour() +
-      parsedDutyHrs.minute() / 60 +
-      parsedDutyHrs.second() / 3600
-    );
-  }
 
   const dutyHrsInNum = timeToNum(finalDutyHrs);
   const otHrsInNum = timeToNum(ot30mins);
@@ -308,7 +306,7 @@ export default function Stat({ e }) {
             mutate(
               post(userTimelogPostUnique, {
                 uniqueData: uuidv4(),
-                userId,
+                dataId,
                 name,
                 mode,
                 dateTime: timeOutSelect,
@@ -348,7 +346,7 @@ export default function Stat({ e }) {
           <div className="flex flex-wrap justify-evenly">
             <div>
               <p className="text-blue-300">Wage rules:</p>
-              <div>Date Hired: {formatDateIncomplete(dateHired)}</div>
+              <div>Date Hired: {formatDateIncomplete(dateHired, true)}</div>
               <div>Employment type: {isReg}</div>
               <div>Day: {day}</div>
               <div>Daily wage: {toPeso(dailyW)}</div>
@@ -531,7 +529,7 @@ export default function Stat({ e }) {
                           },
 
                           event: dayW,
-                          userId: us.userId,
+                          dataId: us.dataId,
                           firstName: us.firstName,
                         }),
                       );
@@ -543,7 +541,7 @@ export default function Stat({ e }) {
                             firstName: us.firstName,
                             eventDescription: "",
                             eventType: "reward",
-                            userId,
+                            dataId,
                             penalty: "",
                             benefitCost: "",
                             reward: toPeso(allowW),

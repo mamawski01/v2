@@ -106,22 +106,26 @@ export function pureTimeAdder(iniTime, ...accTimes) {
   }
 }
 
-export function formatDate(date) {
+export function formatDate(date, exception = false) {
+  if (exception) return dayjs(date).format("YYYY-MM-DD");
   isValidDate2(date);
   return dayjs(date).format("YYYY-MM-DD");
 }
 
-export function formatDateUsable(date) {
+export function formatDateUsable(date, exception = false) {
+  if (exception) return dayjs(date).format("YYYY-MM-DD HH:mm:ss");
   isValidDate2(date);
   return dayjs(date).format("YYYY-MM-DD HH:mm:ss");
 }
 
-export function formatDateComplete(date) {
+export function formatDateComplete(date, exception = false) {
+  if (exception) return dayjs(date).format("YYYY MMMM DD, dddd");
   isValidDate2(date);
   return dayjs(date).format("YYYY MMMM DD, dddd");
 }
 
-export function formatDateIncomplete(date) {
+export function formatDateIncomplete(date, exception = false) {
+  if (exception) return dayjs(date).format("YYYY MMMM, DD");
   isValidDate2(date);
   return dayjs(date).format("YYYY MMMM, DD");
 }
@@ -168,4 +172,14 @@ export function toPeso(val) {
 
 export function twoDecimal(val) {
   return numeral(val).format("0.00");
+}
+
+export function timeToNum(time) {
+  if (time === false) return 0;
+  const parsedDutyHrs = dayjs(time, "HH:mm:ss");
+  return (
+    parsedDutyHrs.hour() +
+    parsedDutyHrs.minute() / 60 +
+    parsedDutyHrs.second() / 3600
+  );
 }

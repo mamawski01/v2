@@ -37,7 +37,7 @@ export default function EventOptions() {
                 <BtnGoBack></BtnGoBack>
               </div>
             </div>
-            <p>Event Date: {formatDateComplete(eData.start)}</p>
+            <p>Event Date: {formatDateComplete(eData.start, true)}</p>
             <div className="mt-5 flex flex-col items-center justify-center gap-1">
               <div>
                 <BtnLink to="userScheduleForm">

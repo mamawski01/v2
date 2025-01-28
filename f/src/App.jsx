@@ -25,6 +25,8 @@ import UserTimeLogForm from "./pages/userSchedule/userSchedule/UserTimeLogForm";
 import UserScheduleForm from "./pages/userSchedule/userSchedule/UserScheduleForm";
 import EventForm from "./pages/userSchedule/userSchedule/EventForm";
 import EventOptions from "./pages/userSchedule/userSchedule/EventOptions";
+import UserFinalTimelogForm from "./pages/userSchedule/userSchedule/UserFinalTimelogForm";
+import UserWageForm from "./pages/userSchedule/userSchedule/UserWageForm";
 
 const routes = [
   {
@@ -98,6 +100,7 @@ const routes = [
         path: "homepage/manageUsers/userSchedule/:id/:uid/eventOptions/userScheduleForm",
         element: <UserScheduleForm />,
       },
+
       {
         path: "homepage/manageUsers/userSchedule/:id/:uid/eventOptions/eventForm",
         element: <EventForm></EventForm>,
@@ -109,6 +112,18 @@ const routes = [
       {
         path: "homepage/manageUsers/userSchedule/:id/:uid/eventForm/:eId",
         element: <EventForm />,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:uid/userFinalTimelogForm",
+        element: <UserFinalTimelogForm />,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:uid/wageForm",
+        element: <UserWageForm />,
+      },
+      {
+        path: "homepage/manageUsers/userSchedule/:id/:uid/wageForm/:wId",
+        element: <UserWageForm />,
       },
     ],
   },

@@ -16,7 +16,7 @@ const schema = new Schema({
     type: String,
     required: [true, "eventTypeSelect is required."],
   },
-  dataId: { type: String, required: [true, "userId is required."] },
+  dataId: { type: String, required: [true, "dataId is required."] },
   benefitCost: { type: String },
   penalty: { type: String },
   reward: { type: String },

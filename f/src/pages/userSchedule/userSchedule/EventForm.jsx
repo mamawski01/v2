@@ -31,7 +31,6 @@ export default function EventForm() {
 
   const location = useLocation();
   const eData = location?.state;
-
   const {
     control,
     handleSubmit,
@@ -94,7 +93,7 @@ export default function EventForm() {
 
     const formData = {
       ...trimmedData,
-      date: formatDate(eData.start),
+      date: formatDate(eData.eData.start, true),
       eventName: eventName.split(" (add event description)")[0],
       firstName: forAll ? "All users" : eData.data.firstName,
       eventType,
@@ -133,7 +132,7 @@ export default function EventForm() {
           all
             ? `${edit ? `Edit` : `Create`} Event for all Users`
             : `${edit ? `Edit` : `Create`} Event for ${eData.data.firstName}` +
-              `, Event date: ${formatDateComplete(eData.start)}, dataId: ${eData.data.dataId}`
+              `, Event date: ${formatDateComplete(eData.start, true)}, dataId: ${eData.data.dataId}`
         }
       >
         <Row>
