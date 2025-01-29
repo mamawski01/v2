@@ -14,7 +14,7 @@ import {
   setItem,
   trimStrings,
 } from "../basic2/FormHelper";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { formatDate, StrPhrase } from "../../../lib/utils0";
 import { patch, post } from "../../../api/api";
 import Loading from "../basic1/Loading";
@@ -44,6 +44,7 @@ export default function FormCommon({
   dataType = "text",
 }) {
   const navigate = useNavigate();
+  const [shouldNavigate, setShouldNavigate] = useState(false);
 
   const { register, handleSubmit, formState, reset, control, getValues } =
     useForm();
@@ -79,7 +80,7 @@ export default function FormCommon({
       if (key.includes("Select")) {
         acc[key] = trimmedData[key].value;
       } else if (key.includes("Date")) {
-        acc[key] = formatDate(trimmedData[key].startDate);
+        acc[key] = formatDate(trimmedData[key].startDate, true);
       } else {
         acc[key] = trimmedData[key];
       }
@@ -87,19 +88,28 @@ export default function FormCommon({
     }, {});
 
     console.log(formData);
+
     loginObj
-      ? loginObj.login(
+      ? await loginObj.login(
           confirmedUserLoginFile,
           await onSubmitForm(formData, dataType),
           navigate,
           loginObj.userSet,
         )
-      : mutate(
+      : await mutate(
           edit
             ? patch(patchOne + id, await onSubmitForm(formData, dataType))
             : post(postOne, await onSubmitForm(formData, dataType)),
         );
+    loginObj ? null : setShouldNavigate(true);
   }
+
+  useEffect(() => {
+    if (shouldNavigate) {
+      navigate(-1);
+      setShouldNavigate(false);
+    }
+  }, [shouldNavigate, navigate]);
 
   if (!data && edit) return <Loading></Loading>;
   return (

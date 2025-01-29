@@ -25,7 +25,14 @@ export function documentTitle() {
   return (document.title = documentTitleStr);
 }
 
-export function calcAge(birthday) {
+export function calcAge(birthday, exception) {
+  if (exception) {
+    const birthdate = dayjs(birthday);
+    const currentDate = dayjs();
+    const age = currentDate.diff(birthdate, "year");
+
+    return age;
+  }
   isValidDate2(birthday);
   const birthdate = dayjs(birthday);
   const currentDate = dayjs();

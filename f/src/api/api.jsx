@@ -5,6 +5,8 @@ import io from "socket.io-client";
 import ToastSuccess from "../reusable/components/basic1/ToastSuccess";
 import ToastError from "../reusable/components/basic1/ToastError";
 import { f2bFormat } from "../reusable/hooks/useHook1";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const bServer = "http://localhost:8000";
 
@@ -23,18 +25,18 @@ function f2bFx(url, data) {
 
 class DataHandler {
   constructor() {}
-  static ifError(exception, navigate) {
+  static ifError(exception, setShouldNavigate) {
     console.log(exception.response.data);
     toast.custom(<ToastError>{exception.response.data}</ToastError>);
     if (exception.response.data.includes("Token")) {
-      navigate("/homepage/login");
+      setShouldNavigate(true);
       localStorage.clear();
     }
     return exception.response.data;
   }
 }
 
-export async function get(url, user, navigate) {
+export async function get(url, user, setShouldNavigate) {
   try {
     if (user.token !== undefined) {
       authenticate(user);
@@ -44,7 +46,7 @@ export async function get(url, user, navigate) {
       return data;
     }
   } catch (exception) {
-    return DataHandler.ifError(exception, navigate);
+    return DataHandler.ifError(exception, setShouldNavigate);
   }
 }
 
@@ -109,7 +111,8 @@ export async function login(url, data, navigate, userSet) {
       image: dataDetails.image,
     });
     localStorage.setItem(dataDetails.username, JSON.stringify(dataDetails));
-    navigate("/homepage");
+
+    await navigate("/homepage");
     return rs;
   } catch (exception) {
     return DataHandler.ifError(exception);

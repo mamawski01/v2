@@ -62,6 +62,7 @@ export default function UserScheduleProvider({ children }) {
   const [showUFT, showUFTSet] = useLocalStorage("showUFT", false);
   const [showE, showESet] = useLocalStorage("showE", false);
   const [showP, showPSet] = useLocalStorage("showP", false);
+  const [showSum, showSumSet] = useLocalStorage("showSum", false);
 
   const { finalDatesArr } = useGlobal();
 
@@ -166,6 +167,10 @@ export default function UserScheduleProvider({ children }) {
           showESet,
           userWage,
           wageRate,
+          showP,
+          showPSet,
+          showSum,
+          showSumSet,
         }}
       >
         {children}

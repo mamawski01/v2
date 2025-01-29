@@ -81,7 +81,7 @@ export default function UserListHelper({
                     <Icon>
                       <ClipboardDocumentIcon></ClipboardDocumentIcon>
                       <p>
-                        {calcAge(data.birthDate)} years old. Birthday:{" "}
+                        {calcAge(data.birthDate, true)} years old. Birthday:{" "}
                         {data.birthDate}. Status: {data.statusSelect}. Gender:{" "}
                         {data.genderSelect}.
                       </p>
