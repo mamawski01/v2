@@ -85,9 +85,6 @@ export function f2bFormat(url) {
 export function useFetch(url, edit = true, form = false) {
   const { user } = useGlobal();
   const navigate = useNavigate();
-
-  const [shouldNavigate, setShouldNavigate] = useState(false);
-
   //params check
   const schema = Joi.object({
     url: Joi.string().required(),
@@ -99,9 +96,7 @@ export function useFetch(url, edit = true, form = false) {
   const { data, refetch, isFetching } = useQuery({
     queryKey: [f2b],
     queryFn: async () => {
-      return (
-        edit && user.token !== undefined && get(url, user, setShouldNavigate)
-      );
+      return edit && user.token !== undefined && get(url, user, navigate);
     },
   });
   const [apiData, apiDataSet] = useState();
@@ -126,12 +121,8 @@ export function useFetch(url, edit = true, form = false) {
   }
 
   useEffect(() => {
-    if (shouldNavigate) {
-      navigate("/homepage/login");
-      if (location.pathname === "/homepage/login") setShouldNavigate(false);
-    }
     refetch();
-  }, [refetch, apiData, navigate, shouldNavigate]);
+  }, [refetch, apiData]);
   return { data, isFetching };
 }
 

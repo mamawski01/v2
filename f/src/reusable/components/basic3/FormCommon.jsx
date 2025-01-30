@@ -44,7 +44,6 @@ export default function FormCommon({
   dataType = "text",
 }) {
   const navigate = useNavigate();
-  const [shouldNavigate, setShouldNavigate] = useState(false);
 
   const { register, handleSubmit, formState, reset, control, getValues } =
     useForm();
@@ -98,26 +97,13 @@ export default function FormCommon({
         )
       : mutate(
           edit
-            ? patch(
-                patchOne + id,
-                await onSubmitForm(formData, dataType),
-                setShouldNavigate,
-              )
-            : post(
-                postOne,
-                await onSubmitForm(formData, dataType),
-                setShouldNavigate,
-              ),
+            ? patch(patchOne + id, await onSubmitForm(formData, dataType))
+            : post(postOne, await onSubmitForm(formData, dataType)),
         );
-    // loginObj ? null : setShouldNavigate(true);
+    setTimeout(() => {
+      loginObj ? null : navigate(-1);
+    }, 0);
   }
-
-  useEffect(() => {
-    if (shouldNavigate) {
-      navigate(-1);
-      setShouldNavigate(false);
-    }
-  }, [shouldNavigate, navigate]);
 
   if (!data && edit) return <Loading></Loading>;
   return (

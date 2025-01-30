@@ -5,8 +5,6 @@ import io from "socket.io-client";
 import ToastSuccess from "../reusable/components/basic1/ToastSuccess";
 import ToastError from "../reusable/components/basic1/ToastError";
 import { f2bFormat } from "../reusable/hooks/useHook1";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const bServer = "http://localhost:8000";
 
@@ -25,19 +23,21 @@ function f2bFx(url, data) {
 
 class DataHandler {
   constructor() {}
-  static ifError(exception, setShouldNavigate) {
+  static ifError(exception, navigate) {
     console.log(exception);
     console.log(exception.response?.data);
     toast.custom(<ToastError>{exception.response?.data}</ToastError>);
     if (exception.response?.data?.includes("Token")) {
-      setShouldNavigate(true);
       localStorage.clear();
+      setTimeout(() => {
+        navigate("/homepage/login");
+      }, 0);
     }
     return exception.response?.data;
   }
 }
 
-export async function get(url, user, setShouldNavigate) {
+export async function get(url, user, navigate) {
   try {
     if (user.token !== undefined) {
       authenticate(user);
@@ -47,28 +47,26 @@ export async function get(url, user, setShouldNavigate) {
       return data;
     }
   } catch (exception) {
-    return DataHandler.ifError(exception, setShouldNavigate);
+    return DataHandler.ifError(exception, navigate);
   }
 }
 
-export async function post(url, data, setShouldNavigate) {
+export async function post(url, data) {
   try {
     const rs = await apiClient.post(url, data);
     f2bFx(url, rs);
     toast.custom(<ToastSuccess>Saved successfully</ToastSuccess>);
-    if (rs && setShouldNavigate) setShouldNavigate(true);
     return rs;
   } catch (exception) {
     return DataHandler.ifError(exception);
   }
 }
 
-export async function patch(url, data, setShouldNavigate) {
+export async function patch(url, data) {
   try {
     const rs = await apiClient.patch(url, data);
     f2bFx(url, rs);
     toast.custom(<ToastSuccess>Edited successfully</ToastSuccess>);
-    if (rs) setShouldNavigate(true);
     return rs;
   } catch (exception) {
     return DataHandler.ifError(exception);
@@ -123,7 +121,6 @@ export async function login(url, data, navigate, userSet) {
 
 export async function logout(navigate, userSet, user) {
   try {
-    // localStorage.removeItem(user.username);
     localStorage.clear();
     user.token !== undefined &&
       toast.custom(<ToastSuccess>Logged Out successfully</ToastSuccess>);
