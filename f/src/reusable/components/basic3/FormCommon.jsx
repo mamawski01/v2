@@ -96,12 +96,20 @@ export default function FormCommon({
           navigate,
           loginObj.userSet,
         )
-      : await mutate(
+      : mutate(
           edit
-            ? patch(patchOne + id, await onSubmitForm(formData, dataType))
-            : post(postOne, await onSubmitForm(formData, dataType)),
+            ? patch(
+                patchOne + id,
+                await onSubmitForm(formData, dataType),
+                setShouldNavigate,
+              )
+            : post(
+                postOne,
+                await onSubmitForm(formData, dataType),
+                setShouldNavigate,
+              ),
         );
-    loginObj ? null : setShouldNavigate(true);
+    // loginObj ? null : setShouldNavigate(true);
   }
 
   useEffect(() => {

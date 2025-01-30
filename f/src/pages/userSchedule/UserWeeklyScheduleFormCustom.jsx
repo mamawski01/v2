@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   useFetch,
   useMutate,
@@ -6,7 +6,7 @@ import {
   weeklySchedulePatch,
 } from "../../reusable/hooks/useHook1";
 import { Controller, useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   onError,
   onSubmitForm,
@@ -38,6 +38,8 @@ const daysOfWeek = [
 
 export default function UserWeeklyScheduleFormCustom() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [shouldNavigate, setShouldNavigate] = useState(false);
   const dataInfo = location.state;
   const { control, formState, handleSubmit, reset, getValues } = useForm();
   const { errors } = formState;
@@ -107,6 +109,13 @@ export default function UserWeeklyScheduleFormCustom() {
         : new Error("Can edit only"),
     );
   }
+
+  useEffect(() => {
+    if (shouldNavigate) {
+      navigate(-1);
+      setShouldNavigate(false);
+    }
+  }, [shouldNavigate, navigate]);
 
   if (!schedule) return <Loading></Loading>;
 

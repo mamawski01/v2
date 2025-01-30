@@ -241,6 +241,11 @@ export const urlArr = [
     url: "/userPayroll/removeOne/:id",
     model: UserPayrollModel,
   },
+  //sala
+  {
+    url: "/userFinalTimelog/postUnique",
+    model: UserFinalTimelogModel,
+  },
 ];
 
 //for systemUrl

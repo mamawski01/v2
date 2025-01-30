@@ -29,10 +29,10 @@ import {
   userEventPostOne,
   userEventRemoveOne,
   userFinalTimelogPatchOne,
+  userFinalTimelogPostUnique,
   userPayrollPatchOne,
   userPayrollPostUnique,
   userPayrollRemoveOne,
-  userTimelogPostUnique,
 } from "../../../reusable/hooks/useHook1";
 import BtnEdit from "../../../reusable/components/basic2/BtnEdit";
 import BtnDelete from "../../../reusable/components/basic2/BtnDelete";
@@ -80,6 +80,7 @@ export default function Stat({ e }) {
   const actTimeOutSelect = onDuty && uft[uft.length - 1].dateTime;
   const lastId = onDuty && uft[uft.length - 1]._id;
   const uftLog = onDuty && uft.map((log) => log);
+  const uftLog2 = !uftLog && uft.map((log) => log);
 
   const notimeOutSelect = onDuty && uftLog.length % 2 === 1 && `no time out,`;
 
@@ -166,6 +167,7 @@ export default function Stat({ e }) {
       : dutyHrs && dutyHrs.format("HH:mm:ss");
 
   const wCreated = userWage?.data?.length > 0;
+
   //wage
   const w = wCreated && e.event.data.w;
   const dailyW = w && w.wage;
@@ -249,7 +251,8 @@ export default function Stat({ e }) {
   const totalW = dayOffWF + dutyHrsWF + dutyHrsWOTf;
 
   //payroll
-  const p = e.event.data.p;
+  const p = e.event.data.p[0];
+
   //incentives
   const allowW = w && w.allowance;
 
@@ -287,6 +290,10 @@ export default function Stat({ e }) {
         )}
       </div>
       <ul className="mt-1 flex flex-col gap-1">
+        {uftLog2 &&
+          uftLog2
+            .slice()
+            .map((log, i) => <div key={i}>{formatTime(log.dateTime)}</div>)}
         {onDuty &&
           uftLog.slice().map((log, i) => (
             <Link
@@ -304,7 +311,7 @@ export default function Stat({ e }) {
         <button
           onClick={() =>
             mutate(
-              post(userTimelogPostUnique, {
+              post(userFinalTimelogPostUnique, {
                 uniqueData: uuidv4(),
                 dataId,
                 name,
@@ -425,50 +432,52 @@ export default function Stat({ e }) {
               <div className="flex justify-center">
                 {p && notDayOff ? (
                   <div className="mt-2 flex w-full justify-evenly">
-                    <BtnEdit
-                      onClick={async () => {
-                        mutate(
-                          patch(userPayrollPatchOne + p._id, {
-                            defWagePerHr: toPeso(dailyWPerHr),
-                            wagePerHrWEvent: toPeso(dailyWPerHrInEvent),
-                            dutyHrs: twoDecimal(dutyHrsInNum),
-                            dutyHrsW: toPeso(dutyHrsWF),
-                            defOTWagePerHr: toPeso(dailyWPerHrInOt),
-                            OTwagePerHrWEvent: toPeso(dailyWPerHrInOtEvent),
-                            OTHrs: twoDecimal(otHrsInNum),
-                            OTHrsW: toPeso(dutyHrsWOTf),
-                            dailyW: toPeso(dailyW),
-                            dailyWMulti: wageRule.day,
-                            dayOffW: toPeso(dayOffWF),
-                            sssAllowance: toPeso(sssAllowance),
-                            totalW: toPeso(totalW),
+                    <div>
+                      <BtnEdit
+                        onClick={async () => {
+                          mutate(
+                            patch(userPayrollPatchOne + p._id, {
+                              defWagePerHr: toPeso(dailyWPerHr),
+                              wagePerHrWEvent: toPeso(dailyWPerHrInEvent),
+                              dutyHrs: twoDecimal(dutyHrsInNum),
+                              dutyHrsW: toPeso(dutyHrsWF),
+                              defOTWagePerHr: toPeso(dailyWPerHrInOt),
+                              OTwagePerHrWEvent: toPeso(dailyWPerHrInOtEvent),
+                              OTHrs: twoDecimal(otHrsInNum),
+                              OTHrsW: toPeso(dutyHrsWOTf),
+                              dailyW: toPeso(dailyW),
+                              dailyWMulti: wageRule.day,
+                              dayOffW: toPeso(dayOffWF),
+                              sssAllowance: toPeso(sssAllowance),
+                              totalW: toPeso(totalW),
 
-                            stats: {
-                              late: late ? late.format("HH:mm:ss") : "",
-                              overtime: overtime ? overtime : "",
-                              underTime: underTime
-                                ? formatTime_hhmm_ss(
-                                    timeDiff(timeOutSelect, actTimeOutSelect),
-                                  ).format("HH:mm:ss")
-                                : "",
-                              overBrk: overBrkStatus
-                                ? overBrk.format("HH:mm:ss")
-                                : "",
-                            },
+                              stats: {
+                                late: late ? late.format("HH:mm:ss") : "",
+                                overtime: overtime ? overtime : "",
+                                underTime: underTime
+                                  ? formatTime_hhmm_ss(
+                                      timeDiff(timeOutSelect, actTimeOutSelect),
+                                    ).format("HH:mm:ss")
+                                  : "",
+                                overBrk: overBrkStatus
+                                  ? overBrk.format("HH:mm:ss")
+                                  : "",
+                              },
 
-                            event: dayW,
-                          }),
-                        ),
-                          Number(allowW) !== 0 &&
-                            mutate(
-                              patch(userEventPatchOne + dailyAllowanceId, {
-                                reward: toPeso(allowW),
-                              }),
-                            );
-                      }}
-                    >
-                      Update Payroll and Allowance
-                    </BtnEdit>
+                              event: dayW,
+                            }),
+                          ),
+                            Number(allowW) !== 0 &&
+                              mutate(
+                                patch(userEventPatchOne + dailyAllowanceId, {
+                                  reward: toPeso(allowW),
+                                }),
+                              );
+                        }}
+                      >
+                        Update Payroll and Allowance
+                      </BtnEdit>
+                    </div>
                     <BtnDelete
                       onClick={async () => {
                         const confirmDelete = await swalAlert(
@@ -477,7 +486,7 @@ export default function Stat({ e }) {
                         if (confirmDelete.isConfirmed) {
                           await Promise.all([
                             mutate(remove(userPayrollRemoveOne + p._id)),
-                            Number(allowW) !== 0
+                            toNumb(allowW) !== 0
                               ? mutate(
                                   remove(userEventRemoveOne + dailyAllowanceId),
                                 )

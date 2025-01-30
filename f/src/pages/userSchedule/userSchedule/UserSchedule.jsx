@@ -98,7 +98,7 @@ export default function UserSchedule() {
   const incentiveStats = rewards - penalties;
   return (
     <ContentBox0>
-      <div className="pt-3">
+      <header className="sticky top-0 z-30 flex h-12 items-center justify-center border-b border-gray-300/20 bg-black/80 backdrop-blur-sm">
         <OptionAutoClose>
           <Icon>
             <Squares2X2Icon></Squares2X2Icon>
@@ -133,7 +133,7 @@ export default function UserSchedule() {
             Show Summary
           </Checkbox>
         </OptionAutoClose>
-        <div className="flex w-full justify-between">
+        <div className="flex w-full items-center justify-between">
           <div></div>
           <div>
             <h1 className="max-w-96 text-wrap">
@@ -149,6 +149,8 @@ export default function UserSchedule() {
             <BtnGoBack></BtnGoBack>
           </div>
         </div>
+      </header>
+      <div className="pt-3">
         <div className="flex flex-col items-center justify-center gap-1">
           {showUS && (
             <DateRangePicker
@@ -160,8 +162,8 @@ export default function UserSchedule() {
           {scheduleListToSave.length > 0 && (
             <div>
               <Btn onClick={userSchedulePostAllUnique} isPending={isPending}>
-                Create Schedules from {formatDate(value.startDate)} to{" "}
-                {formatDate(value.endDate)}.
+                Create Schedules from {formatDate(value.startDate, true)} to{" "}
+                {formatDate(value.endDate, true)}.
               </Btn>
             </div>
           )}

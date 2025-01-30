@@ -69,6 +69,7 @@ export const userPayrollGetGroup = colonRemove(urlEvents[38]);
 export const userPayrollPostUnique = colonRemove(urlEvents[39]);
 export const userPayrollPatchOne = colonRemove(urlEvents[40]);
 export const userPayrollRemoveOne = colonRemove(urlEvents[41]);
+export const userFinalTimelogPostUnique = colonRemove(urlEvents[42]);
 
 function colonRemove(url) {
   return url.split(":")[0];
@@ -84,6 +85,7 @@ export function f2bFormat(url) {
 export function useFetch(url, edit = true, form = false) {
   const { user } = useGlobal();
   const navigate = useNavigate();
+
   const [shouldNavigate, setShouldNavigate] = useState(false);
 
   //params check
@@ -126,7 +128,7 @@ export function useFetch(url, edit = true, form = false) {
   useEffect(() => {
     if (shouldNavigate) {
       navigate("/homepage/login");
-      setShouldNavigate(false);
+      if (location.pathname === "/homepage/login") setShouldNavigate(false);
     }
     refetch();
   }, [refetch, apiData, navigate, shouldNavigate]);

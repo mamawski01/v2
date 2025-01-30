@@ -26,6 +26,7 @@ import Stat from "./Stat";
 import Us from "./Us";
 import Ut from "./Ut";
 import E from "./E";
+import P from "./P";
 
 export default function UserScheduleProvider({ children }) {
   const { mutate, isPending } = useMutate();
@@ -84,6 +85,9 @@ export default function UserScheduleProvider({ children }) {
           }
           case "E": {
             return <E e={e}></E>;
+          }
+          case "P": {
+            return <P e={e}></P>;
           }
           default: {
             return <div className="text-xs">{e.title}</div>;

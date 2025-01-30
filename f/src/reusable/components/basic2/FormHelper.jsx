@@ -88,9 +88,9 @@ function convertToJson(file) {
         });
         return obj;
       });
-      const reName = jsonData.map(({ No, dataId, Name, Mode, DateTime }) => ({
+      const reName = jsonData.map(({ No, UserId, Name, Mode, DateTime }) => ({
         uniqueData: No,
-        dataId: dataId,
+        dataId: UserId,
         name: Name,
         mode: Mode,
         dateTime: DateTime,

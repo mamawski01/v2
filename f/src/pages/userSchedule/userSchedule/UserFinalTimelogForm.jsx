@@ -67,7 +67,7 @@ export default function UserFinalTimelogForm() {
     mutate(
       patch(
         userFinalTimelogPatchOne + formData._id,
-        await new onSubmitForm(formData, "text"),
+        await onSubmitForm(formData, "text"),
       ),
     );
     navigate(-1);

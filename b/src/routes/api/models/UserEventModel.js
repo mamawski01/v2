@@ -10,7 +10,6 @@ const schema = new Schema({
   firstName: { type: String, required: [true, "firstName is required."] },
   eventDescription: {
     type: String,
-    required: [true, "eventDescription is required."],
   },
   eventType: {
     type: String,

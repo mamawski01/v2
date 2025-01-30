@@ -28,7 +28,6 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const { userSet, user } = useGlobal();
   return (
-    // <div className="no-scrollbar relative mx-auto flex min-h-screen w-full flex-col overflow-y-scroll 2xl:w-5/6">
     <div className="no-scrollbar relative mx-auto flex min-h-screen w-full flex-col 2xl:w-5/6">
       <MainHeader>
         <Logo></Logo>

@@ -26,13 +26,14 @@ function f2bFx(url, data) {
 class DataHandler {
   constructor() {}
   static ifError(exception, setShouldNavigate) {
-    console.log(exception.response.data);
-    toast.custom(<ToastError>{exception.response.data}</ToastError>);
-    if (exception.response.data.includes("Token")) {
+    console.log(exception);
+    console.log(exception.response?.data);
+    toast.custom(<ToastError>{exception.response?.data}</ToastError>);
+    if (exception.response?.data?.includes("Token")) {
       setShouldNavigate(true);
       localStorage.clear();
     }
-    return exception.response.data;
+    return exception.response?.data;
   }
 }
 
@@ -50,23 +51,24 @@ export async function get(url, user, setShouldNavigate) {
   }
 }
 
-export async function post(url, data) {
+export async function post(url, data, setShouldNavigate) {
   try {
     const rs = await apiClient.post(url, data);
     f2bFx(url, rs);
     toast.custom(<ToastSuccess>Saved successfully</ToastSuccess>);
+    if (rs && setShouldNavigate) setShouldNavigate(true);
     return rs;
   } catch (exception) {
     return DataHandler.ifError(exception);
   }
 }
 
-export async function patch(url, data) {
-  console.log(data);
+export async function patch(url, data, setShouldNavigate) {
   try {
     const rs = await apiClient.patch(url, data);
     f2bFx(url, rs);
     toast.custom(<ToastSuccess>Edited successfully</ToastSuccess>);
+    if (rs) setShouldNavigate(true);
     return rs;
   } catch (exception) {
     return DataHandler.ifError(exception);
