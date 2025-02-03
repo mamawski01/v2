@@ -62,7 +62,13 @@ export default function EventOptions() {
                 </BtnLink>
               </div>
               <div>
-                <BtnLink to="eventForm/0">
+                <BtnLink
+                  to="eventForm/0"
+                  state={{
+                    eData,
+                    data: data.data,
+                  }}
+                >
                   <Icon>
                     <UserGroupIcon></UserGroupIcon>
                   </Icon>

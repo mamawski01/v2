@@ -8,21 +8,113 @@ import { fSocket, get } from "../../api/api";
 import { schemaResult } from "../../lib/joiValidator";
 import { useGlobal } from "../../context/globalHook";
 
-async function fetchData() {
-  try {
-    const response = await fetch(
-      "http://localhost:8000/systemUrl/getException",
-    );
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-}
-const urlData = await fetchData();
+// async function fetchData() {
+//   try {
+//     const response = await fetch(
+//       "http://localhost:8000/systemUrl/getException",
+//     );
+//     const data = await response.json();
+//     return data;
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+// const urlData = await fetchData();
 
-const events = urlData?.events && urlData?.events;
-export const urlEvents = urlData?.urlEvents?.length > 0 && urlData.urlEvents;
+// const events = urlData?.events && urlData?.events;
+const events = [
+  "systemUrlGetException",
+  "registryUserGetAll",
+  "registryUserGetOne",
+  "registryUserPostFile",
+  "registryUserPatchFile",
+  "registryUserDeleteFile",
+  "confirmedUserGetAll",
+  "confirmedUserGetOne",
+  "registryUserToConfirmedUserTransferOne",
+  "confirmedUserPatchPasswordFile",
+  "confirmedUserRemoveFanDData",
+  "confirmedUserLoginFile",
+  "weeklyScheduleGetOne",
+  "weeklySchedulePatchOne",
+  "confirmedUserGetOP",
+  "userScheduleGetOne",
+  "userScheduleGetGroup",
+  "userSchedulePostUnique",
+  "userSchedulePatchOne",
+  "userScheduleRemoveOne",
+  "userTimelogGetOne",
+  "userTimelogGetGroup",
+  "userTimelogPostUXC",
+  "userFinalTimelogGetOne",
+  "userFinalTimelogGetGroup",
+  "userFinalTimelogPatchOne",
+  "userFinalTimelogRemoveOne",
+  "userEventGetOne",
+  "userEventGetGroup",
+  "userEventAllGetGroup",
+  "userEventPostOne",
+  "userEventPatchOne",
+  "userEventRemoveOne",
+  "userWageGetGroup",
+  "userWagePostOne",
+  "userWagePatchOne",
+  "wageRateGetLocal",
+  "userPayrollGetOne",
+  "userPayrollGetGroup",
+  "userPayrollPostUnique",
+  "userPayrollPatchOne",
+  "userPayrollRemoveOne",
+  "userFinalTimelogPostUnique",
+];
+
+// export const urlEvents = urlData?.urlEvents?.length > 0 && urlData.urlEvents;
+
+export const urlEvents = [
+  "/systemUrl/getException",
+  "/registryUser/getAll",
+  "/registryUser/getOne/:id",
+  "/registryUser/postFile",
+  "/registryUser/patchFile/:id",
+  "/registryUser/deleteFile/:id",
+  "/confirmedUser/getAll",
+  "/confirmedUser/getOne/:id",
+  "/registryUserToConfirmedUser/transferOne/:id",
+  "/confirmedUser/patchPasswordFile/:id",
+  "/confirmedUser/removeFanDData/:id",
+  "/confirmedUser/loginFile",
+  "/weeklySchedule/getOne/:id",
+  "/weeklySchedule/patchOne/:id",
+  "/confirmedUser/getOP/:id",
+  "/userSchedule/getOne/:id",
+  "/userSchedule/getGroup/:id",
+  "/userSchedule/postUnique",
+  "/userSchedule/patchOne/:id",
+  "/userSchedule/removeOne/:id",
+  "/userTimelog/getOne/:id",
+  "/userTimelog/getGroup/:id",
+  "/userTimelog/postUXC",
+  "/userFinalTimelog/getOne/:id",
+  "/userFinalTimelog/getGroup/:id",
+  "/userFinalTimelog/patchOne/:id",
+  "/userFinalTimelog/removeOne/:id",
+  "/userEvent/getOne/:id",
+  "/userEvent/getGroup/:id",
+  "/userEventAll/getGroup/:id",
+  "/userEvent/postOne",
+  "/userEvent/patchOne/:id",
+  "/userEvent/removeOne/:id",
+  "/userWage/getGroup/:id",
+  "/userWage/postOne",
+  "/userWage/patchOne/:id",
+  "/wageRate/getLocal",
+  "/userPayroll/getOne/:id",
+  "/userPayroll/getGroup/:id",
+  "/userPayroll/postUnique",
+  "/userPayroll/patchOne/:id",
+  "/userPayroll/removeOne/:id",
+  "/userFinalTimelog/postUnique",
+];
 
 // console.log(urlEvents);
 // console.log(events);
