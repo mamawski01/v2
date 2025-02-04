@@ -86,8 +86,6 @@ export default function FormCommon({
       return acc;
     }, {});
 
-    console.log(formData);
-
     loginObj
       ? await loginObj.login(
           confirmedUserLoginFile,

@@ -95,7 +95,7 @@ function convertToJson(file) {
         mode: Mode,
         dateTime: DateTime,
       }));
-
+      console.log(reName);
       resolve(reName.splice(1, jsonData.length - 2));
     };
 
